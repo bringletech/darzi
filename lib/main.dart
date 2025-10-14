@@ -16,7 +16,7 @@ import 'l10n/month_year_picker_mr.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 /// IMPORTANT: Background message handler MUST be a top-level function
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
@@ -80,10 +80,10 @@ Future<void> requestNotificationPermissions() async {
 
 Future<void> initializeLocalNotifications() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('ic_stat_darzi'); // 👈 yaha change
+      AndroidInitializationSettings('ic_stat_darzi'); // 👈 yaha change
 
   final DarwinInitializationSettings initializationSettingsIOS =
-  DarwinInitializationSettings(
+      DarwinInitializationSettings(
     requestSoundPermission: true,
     requestBadgePermission: true,
     requestAlertPermission: true,
@@ -105,7 +105,7 @@ Future<void> initializeLocalNotifications() async {
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 }
 
@@ -155,16 +155,17 @@ class _MyAppState extends State<MyApp> {
             android: AndroidNotificationDetails(
               'high_importance_channel',
               'High Importance Notifications',
-              channelDescription: 'This channel is used for important notifications.',
+              channelDescription:
+                  'This channel is used for important notifications.',
               importance: Importance.max,
               priority: Priority.high,
               icon: 'ic_stat_darzi', // white-only icon
-              largeIcon: const DrawableResourceAndroidBitmap('ic_swing'), // colorful icon
+              largeIcon: const DrawableResourceAndroidBitmap(
+                  'ic_swing'), // colorful icon
               color: Color(0xFFD66D11), // accent color
             ),
           ),
         );
-
       }
     });
 
@@ -213,7 +214,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
 
 class CustomMonthYearPickerLocalizationsDelegate
     extends LocalizationsDelegate<MonthYearPickerLocalizations> {
