@@ -288,10 +288,10 @@ class AppLocalizationsMr extends AppLocalizations {
   String get warningMessage1 => 'कृपया सर्व तपशील भरा';
 
   @override
-  String get myTailor => 'माझा दर्जी';
+  String get myTailor => 'दर्जी';
 
   @override
-  String get myDresses => 'माझे ड्रेसेस';
+  String get myDresses => 'ड्रेसेस';
 
   @override
   String get tailorDetail => 'दर्जीचे तपशील';

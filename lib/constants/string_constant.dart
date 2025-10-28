@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 class StringConstant{
  static const Darzi = "DARZI";
  static const tailor = "Tailor";
@@ -88,4 +90,6 @@ class StringConstant{
  static const yourAccount ="Your Account";
  static const measurement="Measurements";
  static const addDress="Add Dress";
+
+ 
 }

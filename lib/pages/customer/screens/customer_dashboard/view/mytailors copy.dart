@@ -1,39 +1,33 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darzi/apiData/call_api_service/call_service.dart';
-import 'package:darzi/apiData/model/get_current_customer_list_details_model.dart';
 import 'package:darzi/apiData/model/tailor_List_Response_Model.dart';
-import 'package:darzi/common/widgets/tailor/common_app_bar_with_back.dart';
-import 'package:darzi/constants/string_constant.dart';
 import 'package:darzi/l10n/app_localizations.dart';
-import 'package:darzi/pages/customer/screens/customer_dashboard/view/customer_dashboard.dart';
 import 'package:darzi/pages/customer/screens/customer_dashboard/view/tailor_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../../../colors.dart';
 import 'customer_dashboard_new.dart';
 
 class MyTailors extends StatefulWidget {
   final Locale locale;
-  MyTailors({super.key, required this.locale});
+  const MyTailors({super.key, required this.locale});
 
   @override
   State<MyTailors> createState() => _MyTailorsState();
 }
 
 class _MyTailorsState extends State<MyTailors> {
-  List<Tailors> tailorList = []; // List to store API response
-  List<Tailors> filteredTailors = []; // Filtered list for search
+  List<Tailors> tailorList = [],
+      filteredTailors = []; // Filtered list for search
   final TextEditingController _searchController = TextEditingController();
   final ScrollController scrollController = ScrollController();
-  bool isLoading = true; // To show loading indicator
-  bool isFetchingMore = false;
-  int page = 0;
-  int limit = 10;
-  bool _hasCallSupport = false;
+  bool isLoading = true, isFetchingMore = false, _hasCallSupport = false;
+  int page = 0, limit = 10;
 
   @override
   void initState() {
@@ -43,12 +37,13 @@ class _MyTailorsState extends State<MyTailors> {
     });
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
-          scrollController.position.maxScrollExtent &&
+              scrollController.position.maxScrollExtent &&
           !isFetchingMore) {
         loadMoreStories();
       }
     });
   }
+
   Future<void> fetchTailorList() async {
     setState(() {
       isLoading = true;
@@ -82,7 +77,7 @@ class _MyTailorsState extends State<MyTailors> {
       print("My Current Page Value is : $limit");
       try {
         Tailor_List_Response_Model model =
-        await CallService().getMyTailorList(page, limit);
+            await CallService().getMyTailorList(page, limit);
         setState(() {
           filteredTailors.addAll(model.data!);
         });
@@ -110,319 +105,303 @@ class _MyTailorsState extends State<MyTailors> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CustomerDashboardNew(
-                      locale: widget.locale,
-                    )),
-          );
-          return false; // Prevent default back behavior
-        },
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            title: Text(
-              AppLocalizations.of(context)!.myTailor,
-              style: const TextStyle(
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w600,
-                fontSize: 24,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            backgroundColor: Colors.white,
-            centerTitle: true,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomerDashboardNew(
-                        locale: widget.locale,
-                      )),
-                );
-                Navigator.pop(context, true);
-              },
+      onWillPop: () async {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CustomerDashboardNew(
+              locale: widget.locale,
             ),
           ),
-          // CustomAppBarWithBack(
-          //   title: AppLocalizations.of(context)!.myTailor,
-          //   hasBackButton: true,
-          //   elevation: 2.0,
-          //   leadingIcon: SvgPicture.asset(
-          //     'assets/svgIcon/myTailor.svg', //just change my image with your image
-          //     color: Colors.black,
-          //   ),
-          //   onBackButtonPressed: () async {
-          //     final result = await Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //           builder: (context) => CustomerDashboardNew(
-          //             locale: widget.locale,
-          //           )),
-          //     );
-          //     Navigator.pop(context, true);
-          //   },
-          // ),
-          body: isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.darkRed,
-                  ), // Loading indicator
-                )
-              : Column(
-                  children: [
-                    Expanded(
-                      child: filteredTailors.isEmpty
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/images/no_results.png",
-                                  height: 80,
+        );
+        return false; // Prevent default back behavior
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(
+            AppLocalizations.of(context)!.myTailor,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              fontSize: 24,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CustomerDashboardNew(
+                    locale: widget.locale,
+                  ),
+                ),
+              );
+              Navigator.pop(context, true);
+            },
+          ),
+        ),
+        body: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.darkRed,
+                ), // Loading indicator
+              )
+            : Column(
+                children: [
+                  Expanded(
+                    child: filteredTailors.isEmpty
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/no_results.png",
+                                height: 80,
+                              ),
+                              Center(
+                                child: Text(
+                                  AppLocalizations.of(context)!.no_tailor_found,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey),
                                 ),
-                                Center(
-                                  child: Text(
-                                    AppLocalizations.of(context)!
-                                        .no_tailor_found,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey),
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Container(
-                              padding: const EdgeInsets.only(top: 20),
-                              color: Colors.white,
-                              child: ListView.builder(
-                                controller: scrollController,
-                                physics: BouncingScrollPhysics(),
-                                itemCount: filteredTailors.length + (isFetchingMore ? 1 : 0),
-                                itemBuilder: (context, index) {
-                                  if (index == filteredTailors.length) {
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        color: AppColors.newUpdateColor,
+                              ),
+                            ],
+                          )
+                        : Container(
+                            padding: const EdgeInsets.only(top: 20),
+                            color: Colors.white,
+                            child: ListView.builder(
+                              controller: scrollController,
+                              physics: BouncingScrollPhysics(),
+                              itemCount: filteredTailors.length +
+                                  (isFetchingMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == filteredTailors.length) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.newUpdateColor,
+                                    ),
+                                  );
+                                }
+                                final tailor = filteredTailors[index];
+                                print("specific tailor id is ${tailor.id}");
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TailorDetails(
+                                          locale: widget.locale,
+                                          tailorId: tailor.id.toString(),
+                                        ),
                                       ),
                                     );
-                                  }
-                                  final tailor = filteredTailors[index];
-                                  print("specific tailor id is ${tailor.id}");
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  TailorDetails(
-                                                      locale: widget.locale,
-                                                      tailorId: tailor.id
-                                                          .toString())));
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 3,
-                                          horizontal:
-                                              15), // 👈 Card ke beech ka space kam kiya
-                                      child: Card(
-                                        color: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ),
-                                        elevation: 10,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 5, horizontal: 10),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                child: SizedBox(
-                                                  width: 70,
-                                                  height: 70,
-                                                  child: CachedNetworkImage(
-                                                    fit: BoxFit.cover,
-                                                    height: 50,
-                                                    width: 50,
-                                                    imageUrl: tailor.profileUrl
-                                                        .toString(),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            SvgPicture.asset(
-                                                      'assets/svgIcon/profilepic.svg',
-                                                      // Default profile icon
-                                                      width: 120,
-                                                      height: 120,
-                                                    ),
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 3,
+                                        horizontal:
+                                            15), // 👈 Card ke beech ka space kam kiya
+                                    child: Card(
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      elevation: 10,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              child: SizedBox(
+                                                width: 70,
+                                                height: 70,
+                                                child: CachedNetworkImage(
+                                                  fit: BoxFit.cover,
+                                                  height: 50,
+                                                  width: 50,
+                                                  imageUrl: tailor.profileUrl
+                                                      .toString(),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          SvgPicture.asset(
+                                                    'assets/svgIcon/profilepic.svg',
+                                                    // Default profile icon
+                                                    width: 120,
+                                                    height: 120,
                                                   ),
                                                 ),
                                               ),
-                                              const SizedBox(
-                                                  width:
-                                                      8), // 👈 Spacing Between Image and Text Kam Kiya
-                                              Expanded(
-                                                flex: 5,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      tailor.name ??
-                                                          AppLocalizations.of(
-                                                                  context)!
-                                                              .noUserName,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xFF000000),
-                                                        fontSize: 19,
-                                                        fontFamily: 'Poppins',
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
+                                            ),
+                                            const SizedBox(
+                                                width:
+                                                    8), // 👈 Spacing Between Image and Text Kam Kiya
+                                            Expanded(
+                                              flex: 5,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    tailor.name ??
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .noUserName,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                      color: Color(0xFF000000),
+                                                      fontSize: 19,
+                                                      fontFamily: 'Poppins',
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
-                                                    Row(
-                                                      children: [
-                                                        SvgPicture.asset(
-                                                          'assets/svgIcon/location.svg',
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        'assets/svgIcon/location.svg',
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          tailor.address ??
+                                                              AppLocalizations.of(
+                                                                      context)!
+                                                                  .userNoAddress,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          maxLines: 1,
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xFF000000),
+                                                            fontSize: 13,
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
                                                         ),
-                                                        SizedBox(
-                                                          width: 5,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      RatingBarIndicator(
+                                                        rating: tailor
+                                                            .avgRating!
+                                                            .toDouble(),
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        itemBuilder:
+                                                            (context, index) =>
+                                                                Icon(
+                                                          Icons.star,
+                                                          color: AppColors
+                                                              .ratingBarColor,
                                                         ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            tailor.address ??
-                                                                AppLocalizations.of(
-                                                                        context)!
-                                                                    .userNoAddress,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            maxLines: 1,
-                                                            style:
-                                                                const TextStyle(
-                                                              color: Color(
-                                                                  0xFF000000),
-                                                              fontSize: 13,
+                                                        itemCount: 5,
+                                                        itemSize: 20.0,
+                                                        //unratedColor : Colors.blue
+                                                      ),
+                                                      SizedBox(width: 6),
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 8,
+                                                                vertical: 1.5),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.black,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(4),
+                                                        ),
+                                                        child: Text(
+                                                          tailor.avgRating!
+                                                              .toString(),
+                                                          style: TextStyle(
                                                               fontFamily:
-                                                                  'Poppins',
+                                                                  'Inter',
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 16,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .w500,
-                                                            ),
-                                                          ),
+                                                                      .w600),
                                                         ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        RatingBarIndicator(
-                                                          rating: tailor
-                                                              .avgRating!
-                                                              .toDouble(),
-                                                          direction:
-                                                              Axis.horizontal,
-                                                          itemBuilder: (context,
-                                                                  index) =>
-                                                              Icon(
-                                                            Icons.star,
-                                                            color: AppColors
-                                                                .ratingBarColor,
-                                                          ),
-                                                          itemCount: 5,
-                                                          itemSize: 20.0,
-                                                          //unratedColor : Colors.blue
-                                                        ),
-                                                        SizedBox(width: 6),
-                                                        Container(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal: 8,
-                                                                  vertical:
-                                                                      1.5),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.black,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        4),
-                                                          ),
-                                                          child: Text(
-                                                            tailor.avgRating!
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    'Inter',
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                              Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () async {
-                                                      openWhatsApp(context,tailor.mobileNo.toString());
-                                                    },
-                                                    child: Image.asset(
-                                                      'assets/images/whatsapp.png',
-                                                      width: 28,
-                                                      height: 28,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 20),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      _makePhoneCall(
-                                                          context,
-                                                          tailor.mobileNo
-                                                              .toString());
-                                                    },
-                                                    child: SvgPicture.asset(
-                                                      'assets/svgIcon/phone_color.svg',
-                                                      width: 28,
-                                                      height: 28,
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
                                               ),
-                                            ],
-                                          ),
+                                            ),
+
+                                            Column(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    openWhatsApp(
+                                                        context,
+                                                        tailor.mobileNo
+                                                            .toString());
+                                                  },
+                                                  child: Image.asset(
+                                                    'assets/images/whatsapp.png',
+                                                    width: 28,
+                                                    height: 28,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 20),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    _makePhoneCall(
+                                                        context,
+                                                        tailor.mobileNo
+                                                            .toString());
+                                                  },
+                                                  child: SvgPicture.asset(
+                                                    'assets/svgIcon/phone_color.svg',
+                                                    width: 28,
+                                                    height: 28,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                  );
-                                },
-                              )),
-                    ),
-                  ],
-                ),
-        ));
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+      ),
+    );
   }
+
   /// Helper function to format phone number for WhatsApp
   String formatPhoneNumber(String phone, {String defaultCountryCode = '91'}) {
     String cleanedPhone = phone.replaceAll(RegExp(r'\D'), '');
@@ -440,12 +419,11 @@ class _MyTailorsState extends State<MyTailors> {
     return cleanedPhone; // ✅ no `+` in this string!
   }
 
-
-
   void openWhatsApp(BuildContext context, String phone) async {
     String formattedPhone = formatPhoneNumber(phone);
 
-    final Uri whatsappUrl = Uri.parse("https://wa.me/$formattedPhone?text=Hello");
+    final Uri whatsappUrl =
+        Uri.parse("https://wa.me/$formattedPhone?text=Hello");
 
     try {
       // Always launch directly (skip canLaunch check)

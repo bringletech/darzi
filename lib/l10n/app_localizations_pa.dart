@@ -289,10 +289,10 @@ class AppLocalizationsPa extends AppLocalizations {
   String get warningMessage1 => 'ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ ਵਿਵਰਣ ਭਰੋ';
 
   @override
-  String get myTailor => 'ਮੇਰਾ ਦਰਜ਼ੀ';
+  String get myTailor => 'ਦਰਜ਼ੀ';
 
   @override
-  String get myDresses => 'ਮੇਰੀਆਂ ਡ੍ਰੈੱਸਾਂ';
+  String get myDresses => 'ਡ੍ਰੈੱਸਾਂ';
 
   @override
   String get tailorDetail => 'ਦਰਜ਼ੀ ਦੇ ਵੇਰਵੇ';

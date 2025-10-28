@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
+
 import 'package:darzi/constants/string_constant.dart';
 import 'package:darzi/pages/tailor/screens/tailorLogin/view/tailorRegisterPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -7,12 +9,10 @@ import 'l10n/app_localizations.dart';
 import 'pages/customer/screens/customer_Login/view/customerRegisterPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class HomePage extends StatefulWidget {
   final Function(Locale) onChangeLanguage;
 
-  const HomePage({Key? key, required this.onChangeLanguage}) : super(key: key);
+  const HomePage({Key? key, required this.onChangeLanguage});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -41,11 +41,12 @@ class _HomePageState extends State<HomePage> {
     final prefs = await SharedPreferences.getInstance();
     String? languageCode = prefs.getString('selectedLanguage');
     if (languageCode != null) {
+      Locale savedLocale = Locale(languageCode);
       setState(() {
-        _currentLocale = Locale(languageCode); // Load saved language
-        _updateLabels(_currentLocale!); // Update UI labels
+        _currentLocale = savedLocale;
+        _updateLabels(savedLocale);
       });
-      widget.onChangeLanguage(_currentLocale!); // Update app language
+      widget.onChangeLanguage(savedLocale); // Update app locale
     }
   }
 
@@ -54,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadSavedLanguage(); // Load saved language on app start
-    _initDeviceToken();   // Save device token after logout
+    _initDeviceToken(); // Save device token after logout
   }
 
   Future<void> _initDeviceToken() async {
@@ -126,7 +127,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -286,12 +290,12 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CustomerregisterpagePage(locale: _currentLocale!),
+                      builder: (context) =>
+                          CustomerregisterpagePage(locale: _currentLocale!),
                     ),
                   );
                 }
               },
-
               onTapCancel: () {
                 setState(() {
                   _isPressedCustomer = false;
@@ -320,13 +324,14 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 10),
             // Language Dropdown
-            Container(
+            SizedBox(
               height: 50,
               width: 300,
-              child:Theme(
+              child: Theme(
                 data: Theme.of(context).copyWith(
-              canvasColor: AppColors.newUpdateColor, // Changes the dropdown menu background
-            ),
+                  canvasColor: AppColors
+                      .newUpdateColor, // Changes the dropdown menu background
+                ),
                 child: DropdownButtonFormField<Locale>(
                   value: _currentLocale,
                   onChanged: (Locale? newLocale) async {
@@ -336,7 +341,8 @@ class _HomePageState extends State<HomePage> {
                         _currentLocale = null; // Reset the current locale
                         tailorLabel = "Tailor";
                         customerLabel = "Customer";
-                        selectLanguage = "Select Your Language"; // Reset UI labels
+                        selectLanguage =
+                            "Select Your Language"; // Reset UI labels
                       });
 
                       // Clear saved language from SharedPreferences
@@ -347,7 +353,8 @@ class _HomePageState extends State<HomePage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            AppLocalizations.of(context)!.language_selection_first,
+                            AppLocalizations.of(context)!
+                                .language_selection_first,
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               color: Colors.white,
@@ -372,14 +379,16 @@ class _HomePageState extends State<HomePage> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: AppColors.newUpdateColor,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.newUpdateColor, width: 2),
+                      borderSide:
+                          BorderSide(color: AppColors.newUpdateColor, width: 2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.newUpdateColor, width: 2),
+                      borderSide:
+                          BorderSide(color: AppColors.newUpdateColor, width: 2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
@@ -398,66 +407,102 @@ class _HomePageState extends State<HomePage> {
                     ),
                     DropdownMenuItem(
                       value: Locale('en'),
-                      child: Text("English", style: TextStyle( fontFamily: 'Poppins',
-                        color: Colors.white, // Change text color based on state
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,) ),
+                      child: Text("English",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors
+                                .white, // Change text color based on state
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                          )),
                     ),
                     DropdownMenuItem(
                       value: Locale('hi'),
-                      child: Text("हिन्दी (Hindi)",style: TextStyle( fontFamily: 'Poppins',
-                        color: Colors.white, // Change text color based on state
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,) ),
+                      child: Text("हिन्दी (Hindi)",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors
+                                .white, // Change text color based on state
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                          )),
                     ),
                     DropdownMenuItem(
                       value: Locale('pa'),
-                      child: Text("ਪੰਜਾਬੀ (Punjabi)",style: TextStyle( fontFamily: 'Poppins',
-                        color: Colors.white, // Change text color based on state
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,) ),
+                      child: Text("ਪੰਜਾਬੀ (Punjabi)",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors
+                                .white, // Change text color based on state
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                          )),
                     ),
                     DropdownMenuItem(
                       value: Locale('te'),
-                      child: Text("తెలుగు (Telugu)", style: TextStyle( fontFamily: 'Poppins',
-                        color: Colors.white, // Change text color based on state
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,) ),
+                      child: Text("తెలుగు (Telugu)",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors
+                                .white, // Change text color based on state
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                          )),
                     ),
                     DropdownMenuItem(
                       value: Locale('ta'),
-                      child: Text("தமிழ் (Tamil)", style: TextStyle( fontFamily: 'Poppins',
-                        color: Colors.white, // Change text color based on state
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,) ),
+                      child: Text("தமிழ் (Tamil)",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors
+                                .white, // Change text color based on state
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                          )),
                     ),
                     DropdownMenuItem(
                       value: Locale('kn'),
-                      child: Text("ಕನ್ನಡ (Kannada)", style: TextStyle( fontFamily: 'Poppins',
-                        color: Colors.white, // Change text color based on state
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,) ),
+                      child: Text("ಕನ್ನಡ (Kannada)",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors
+                                .white, // Change text color based on state
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                          )),
                     ),
                     DropdownMenuItem(
                       value: Locale('ml'),
-                      child: Text("മലയാളം (Malayalam)", style: TextStyle( fontFamily: 'Poppins',
-                        color: Colors.white, // Change text color based on state
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,) ),
+                      child: Text("മലയാളം (Malayalam)",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors
+                                .white, // Change text color based on state
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                          )),
                     ),
                     DropdownMenuItem(
                       value: Locale('gu'),
-                      child: Text("ગુજરાતી (Gujarati)", style: TextStyle( fontFamily: 'Poppins',
-                        color: Colors.white, // Change text color based on state
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,) ),
+                      child: Text("ગુજરાતી (Gujarati)",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors
+                                .white, // Change text color based on state
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                          )),
                     ),
                     DropdownMenuItem(
                       value: Locale('mr'),
-                      child: Text("मराठी (Marathi)", style: TextStyle( fontFamily: 'Poppins',
-                        color: Colors.white, // Change text color based on state
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,) ),
+                      child: Text("मराठी (Marathi)",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors
+                                .white, // Change text color based on state
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                          )),
                     ),
                   ],
                   icon: Icon(Icons.arrow_drop_down, color: Colors.white),

@@ -289,10 +289,10 @@ class AppLocalizationsKn extends AppLocalizations {
   String get warningMessage1 => 'ದಯವಿಟ್ಟು ಎಲ್ಲಾ ವಿವರಗಳನ್ನು ತುಂಬಿಸಿ';
 
   @override
-  String get myTailor => 'ನನ್ನ ಟೈಲರ್';
+  String get myTailor => 'ಟೈಲರ್';
 
   @override
-  String get myDresses => 'ನನ್ನ ಉಡುಪುಗಳು';
+  String get myDresses => 'ಉಡುಪುಗಳು';
 
   @override
   String get tailorDetail => 'ಟೈಲರ್ ವಿವರಗಳು';

@@ -1,7 +1,9 @@
-import 'dart:convert';
+// ignore_for_file: must_be_immutable
+
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:darzi/apiData/all_urls/all_urls.dart';
+import 'package:darzi/Reusable/text_reusable_pop.dart';
+import 'package:darzi/Reusable/text_reusable_rob.dart';
 import 'package:darzi/apiData/call_api_service/call_service.dart';
 import 'package:darzi/apiData/model/aws_response_model.dart';
 import 'package:darzi/apiData/model/customer_add_to_favourite_response_model.dart';
@@ -12,42 +14,42 @@ import 'package:darzi/l10n/app_localizations.dart';
 import 'package:darzi/pages/customer/screens/customer_Login/view/customerRegisterPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../colors.dart';
-import '../../../../../common/widgets/tailor/common_app_bar_with_back.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 
 class TailorFullView extends StatefulWidget {
   final Locale locale;
   final String tailorId;
-  TailorFullView({super.key, required this.locale, required this.tailorId});
+  String? tailorloc;
+  TailorFullView(
+      {super.key,
+      required this.locale,
+      required this.tailorId,
+      this.tailorloc});
 
   @override
   State<TailorFullView> createState() => _TailorFullViewState();
 }
 
 class _TailorFullViewState extends State<TailorFullView> {
-  bool isLoading = false;
-  // Instead of global isLoading
-  bool isDialogLoading = false;
+  bool isLoading = false, isDialogLoading = false;
   double _rating = 0.0;
-  bool? isFavourite;
-  bool? isReview;
+  bool? isFavourite, isReview;
   TextEditingController _reviewController = TextEditingController();
   TailorDetailsData? tailorDetailsData;
   ReviewCategories? reviewCategories;
   List<ReviewListData> review_List_Data = [];
   List<String> reviewImageList = [];
   File? _selectedImage;
-  double? latitude;
-  double? longitude;
+  double? latitude, longitude;
   String fileName = "",
       presignedUrl = "",
       objectUrl = "",
@@ -95,7 +97,7 @@ class _TailorFullViewState extends State<TailorFullView> {
 
     try {
       Get_Customer_Tailor_Reviews_Response_Model model =
-      await CallService().get_Tailor_Review_List(tailorId);
+          await CallService().get_Tailor_Review_List(tailorId);
 
       setState(() {
         review_List_Data = model.data!;
@@ -112,7 +114,6 @@ class _TailorFullViewState extends State<TailorFullView> {
       });
     }
   }
-
 
   String getFirstTwoWords(String? name) {
     if (name == null || name.trim().isEmpty) return "NA"; // Null ya empty check
@@ -172,532 +173,529 @@ class _TailorFullViewState extends State<TailorFullView> {
         : [];
     return WillPopScope(
         onWillPop: () async {
-      Navigator.pop(context, true); // Ensure 'true' is returned on back
-      return false; // Prevent default behavior (pop again)
-    },child:Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Text(
-            AppLocalizations.of(context)!.myTailor,
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 24,
-            ),
-            textAlign: TextAlign.center,
-          ),
+          Navigator.pop(context, true); // Ensure 'true' is returned on back
+          return false; // Prevent default behavior (pop again)
+        },
+        child: Scaffold(
           backgroundColor: Colors.white,
-          elevation: 0,
-          centerTitle: true, // 👈 yeh add karo
-          scrolledUnderElevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () async {
-              Navigator.pop(context, true);
-            },
+          appBar: AppBar(
+            title: Text(
+              AppLocalizations.of(context)!.myTailor,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 24,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            centerTitle: true, // 👈 yeh add karo
+            scrolledUnderElevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () async {
+                Navigator.pop(context, true);
+              },
+            ),
           ),
-        ),
-        // CustomAppBarWithBack(
-        //   title: AppLocalizations.of(context)!.myTailor,
-        //   hasBackButton: true,
-        //   elevation: 2.0,
-        //   onBackButtonPressed: () {
-        //     Navigator.pop(context, true); // returns true to previous screen
-        //   },
-        //   leadingIcon: SvgPicture.asset(
-        //     'assets/svgIcon/myTailor.svg',
-        //     color: Colors.black,
-        //   ),
-        // ),
-        body: isLoading || tailorDetailsData == null
-            ? Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            tailorDetailsData?.profileUrl?.toString() ?? '',
-                        errorWidget: (context, url, error) => Image.network(
-                            'https://dummyimage.com/500x500/aaa/000000.png&text= No+Image+Available',
-                            fit: BoxFit.fill),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Center(
-                              child: CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.blue,
-                            child: Text(
-                              getFirstTwoWords(tailorDetailsData?.name ??
-                                  AppLocalizations.of(context)!.noUserName),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
+          body: isLoading || tailorDetailsData == null
+              ? Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 10),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: CachedNetworkImage(
+                            width: double.infinity,
+                            height: 200,
+                            fit: BoxFit.cover,
+                            imageUrl:
+                                tailorDetailsData?.profileUrl?.toString() ?? '',
+                            errorWidget: (context, url, error) => Image.network(
+                              'https://dummyimage.com/500x500/aaa/000000.png&text= No+Image+Available',
+                              fit: BoxFit.cover,
                             ),
-                          )),
-                          Text(
-                            tailorDetailsData!.name ??
-                                AppLocalizations.of(context)!.noUserName,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontFamily: 'Poppins',
-                                fontSize: 19),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              RatingBarIndicator(
-                                rating: (tailorDetailsData?.avgRating ?? 0)
-                                    .toDouble(),
-                                direction: Axis.horizontal,
-                                itemBuilder: (context, index) => Icon(
-                                  Icons.star,
-                                  color: AppColors.ratingBarColor,
-                                ),
-                                itemCount: 5,
-                                itemSize: 20.0,
+                              SizedBox(
+                                height: 10,
                               ),
-                              SizedBox(width: 6),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 1.5),
-                                decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  tailorDetailsData!.avgRating!.toString(),
-                                  style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ],
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              String? accessToken =
-                                  prefs.getString('userToken');
-                              print(
-                                  "User Access Token Value is : $accessToken");
-
-                              if (accessToken == null || accessToken.isEmpty) {
-                                _showRegistrationPopup(
-                                    context); // <-- When token is null or empty
-                              } else {
-                                showAlertDialog(
-                                    context); // <-- When token is available
-                              }
-                            },
-                            child: Visibility(
-                              visible: isReview == false,
-                              child: Text(
-                                AppLocalizations.of(context)!.write_review,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'Poppins',
-                                  fontSize: 18,
-                                  color: Color(0xFF0165A3),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(left: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        _makePhoneCall(
-                                            context,
-                                            tailorDetailsData!.mobileNo
-                                                .toString());
-                                      },
-                                      child: SvgPicture.asset(
-                                        'assets/svgIcon/phoneCircle.svg',
-                                        width: 36,
-                                        height: 36,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.tailor_call,
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xFF0165A3)),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 30,
-                                ),
-                                Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        openGoogleMapsWithDirections();
-                                      },
-                                      child: SvgPicture.asset(
-                                        'assets/svgIcon/locationCircle.svg',
-                                        width: 36,
-                                        height: 36,
-                                        color: AppColors.newUpdateColor,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!
-                                          .tailor_location,
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xFF0165A3)),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        openWhatsApp(
-                                            context,
-                                            tailorDetailsData!.mobileNo
-                                                .toString());
-                                      },
-                                      child: Image.asset(
-                                        'assets/images/whatsapp.png',
-                                        width: 36,
-                                        height: 36,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!
-                                          .tailor_whatsapp,
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xFF0165A3)),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 15.0, right: 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(context)!
-                                          .add_to_favourite,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'Poppins',
-                                          fontSize: 11),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    (isFavourite == true)
-                                        ? GestureDetector(
-                                            onTap: () async {
-                                              SharedPreferences prefs =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              String? accessToken =
-                                                  prefs.getString('userToken');
-                                              print(
-                                                  "User Access Token Value is : $accessToken");
-
-                                              if (accessToken == null ||
-                                                  accessToken.isEmpty) {
-                                                _showRegistrationPopup(context);
-                                              } else {
-                                                add_Tailor_To_Favourite(
-                                                    widget.tailorId);
-                                              }
-                                            },
-                                            child: Icon(Icons.favorite,
-                                                color:
-                                                    AppColors.newUpdateColor),
-                                          )
-                                        : GestureDetector(
-                                            onTap: () async {
-                                              SharedPreferences prefs =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              String? accessToken =
-                                                  prefs.getString('userToken');
-                                              print(
-                                                  "User Access Token Value is : $accessToken");
-
-                                              if (accessToken == null ||
-                                                  accessToken.isEmpty) {
-                                                _showRegistrationPopup(context);
-                                              } else {
-                                                add_Tailor_To_Favourite(
-                                                    widget.tailorId);
-                                              }
-                                            },
-                                            child: Icon(Icons.favorite_border),
-                                          )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            tailorDetailsData!.avgRating.toString(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontFamily: 'Inter',
-                                fontSize: 48),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              RatingBarIndicator(
-                                rating:
-                                    tailorDetailsData!.avgRating!.toDouble(),
-                                direction: Axis.horizontal,
-                                itemBuilder: (context, index) => Icon(
-                                  Icons.star,
-                                  color: AppColors.ratingBarColor,
-                                ),
-                                itemCount: 5,
-                                itemSize: 20.0,
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: ratings.map((rating) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4.0),
-                                  child: Row(
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextResPopp(
+                                      FontWeight.w700,
+                                      tailorDetailsData!.name ??
+                                          AppLocalizations.of(context)!
+                                              .noUserName,
+                                      20),
+                                  Row(
                                     children: [
-                                      SizedBox(
-                                        width: 100,
-                                        child: Text(
-                                          rating["label"],
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ),
+                                      (isFavourite == true)
+                                          ? GestureDetector(
+                                              onTap: () async {
+                                                SharedPreferences prefs =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                String? accessToken = prefs
+                                                    .getString('userToken');
+                                                print(
+                                                    "User Access Token Value is : $accessToken");
+
+                                                if (accessToken == null ||
+                                                    accessToken.isEmpty) {
+                                                  _showRegistrationPopup(
+                                                      context);
+                                                } else {
+                                                  add_Tailor_To_Favourite(
+                                                      widget.tailorId);
+                                                }
+                                              },
+                                              child: Icon(Icons.favorite,
+                                                  color:
+                                                      AppColors.newUpdateColor),
+                                            )
+                                          : GestureDetector(
+                                              onTap: () async {
+                                                SharedPreferences prefs =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                String? accessToken = prefs
+                                                    .getString('userToken');
+                                                print(
+                                                    "User Access Token Value is : $accessToken");
+
+                                                if (accessToken == null ||
+                                                    accessToken.isEmpty) {
+                                                  _showRegistrationPopup(
+                                                      context);
+                                                } else {
+                                                  add_Tailor_To_Favourite(
+                                                      widget.tailorId);
+                                                }
+                                              },
+                                              child: Icon(
+                                                Icons.favorite_border,
+                                                size: 15,
+                                              ),
+                                            ),
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      Expanded(
-                                        child: LinearProgressIndicator(
-                                          value: double.tryParse(
-                                                  rating["value"].toString()) ??
-                                              0.0, // String to double conversion
-                                          backgroundColor: Colors.grey[300],
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  rating["color"]),
-                                          minHeight: 8,
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                        ),
-                                      ),
+                                      TextResuableRob(
+                                          FontWeight.normal,
+                                          AppLocalizations.of(context)!
+                                              .add_to_favourite,
+                                          12),
                                     ],
                                   ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                          Visibility(
-                            visible: review_List_Data.isNotEmpty,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: review_List_Data.length,
-                              itemBuilder: (context, index) {
-                                final review = review_List_Data[index];
-                                return Card(
-                                  color: Colors.white,
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12)),
-                                  margin: EdgeInsets.only(bottom: 12),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 22,
-                                                  backgroundColor: Colors.grey[
-                                                      300], // Optional background color
-                                                  child: ClipOval(
-                                                    child: CachedNetworkImage(
-                                                      imageUrl: review.customer
-                                                              ?.profileUrl ??
-                                                          '', // Ensure it doesn't crash if null
-                                                      width:
-                                                          44, // Double the radius to fit perfectly
-                                                      height: 44,
-                                                      fit: BoxFit.cover,
-                                                      placeholder: (context,
-                                                              url) =>
-                                                          CircularProgressIndicator(),
-                                                      errorWidget: (context,
-                                                              url, error) =>
-                                                          Icon(Icons.person,
-                                                              size: 44,
-                                                              color: Colors
-                                                                  .grey), // Fallback icon
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                  textAlign: TextAlign.start,
-                                                  getFirstTwoWords(
-                                                      review.customer?.name),
-                                                  style: TextStyle(
-                                                      fontFamily: 'Poppins',
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                              ],
-                                            ),
-                                            Text(review.reviewTime.toString(),
-                                                style: TextStyle(
-                                                    fontFamily: 'Inter',
-                                                    fontSize: 8,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.grey)),
-                                          ],
-                                        ),
-                                        SizedBox(height: 6),
-                                        RatingBarIndicator(
-                                          rating:
-                                              (review.rating ?? 0).toDouble(),
-                                          direction: Axis.horizontal,
-                                          itemBuilder: (context, index) => Icon(
-                                            Icons.star,
-                                            color: AppColors.ratingBarColor,
-                                          ),
-                                          itemCount: 5,
-                                          itemSize: 20.0,
-                                        ),
-                                        if (review.review
-                                            .toString()
-                                            .isNotEmpty) ...[
-                                          SizedBox(height: 6),
-                                          Text(
-                                            review.review.toString(),
-                                            style: TextStyle(
-                                              fontFamily: 'Inter',
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w400,
+                                ],
+                              ),
+                              TextResuableRob(
+                                FontWeight.normal,
+                                widget.tailorloc ?? "No Address Available",
+                                14,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextResPopp(FontWeight.w700, "Contact", 20),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: AppColors.newUpdateColor,
+                                          width: 2),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(6),
+                                      child: Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              _makePhoneCall(
+                                                context,
+                                                tailorDetailsData!.mobileNo
+                                                    .toString(),
+                                              );
+                                            },
+                                            child: Icon(
+                                              Icons.phone,
+                                              color: AppColors.newUpdateColor,
                                             ),
                                           ),
+                                          TextResuableRob(
+                                              FontWeight.normal,
+                                              AppLocalizations.of(context)!
+                                                  .tailor_call,
+                                              16),
                                         ],
-                                        if (review.images != null) ...[
-                                          SizedBox(height: 6),
-                                          Visibility(
-                                            visible: review.images!.isNotEmpty,
-                                            child: SizedBox(
-                                              height: 100,
-                                              child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount:
-                                                    review.images!.length,
-                                                itemBuilder:
-                                                    (context, imgIndex) {
-                                                  return Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 10),
-                                                    child: Image.network(
-                                                      review.images![imgIndex],
-                                                      width: 100,
-                                                      height: 100,
-                                                      fit: BoxFit.cover,
-                                                      errorBuilder: (context,
-                                                          error, stackTrace) {
-                                                        return Image.network(
-                                                          height: 100,
-                                                          width: 100,
-                                                          'https://dummyimage.com/500x500/aaa/000000.png&text= No+Image+Available',
-                                                          fit: BoxFit.fill,
-                                                        );
-                                                      },
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: AppColors.newUpdateColor,
+                                          width: 2),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(6),
+                                      child: Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              openGoogleMapsWithDirections();
+                                            },
+                                            child: Icon(
+                                              Icons.location_on_outlined,
+                                              color: AppColors.newUpdateColor,
+                                            ),
+                                          ),
+                                          TextResuableRob(
+                                              FontWeight.normal,
+                                              AppLocalizations.of(context)!
+                                                  .tailor_location,
+                                              16),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: AppColors.newUpdateColor,
+                                          width: 2),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(6),
+                                      child: Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              openWhatsApp(
+                                                context,
+                                                tailorDetailsData!.mobileNo
+                                                    .toString(),
+                                              );
+                                            },
+                                            child: FaIcon(
+                                                FontAwesomeIcons.whatsapp,
+                                                color:
+                                                    AppColors.newUpdateColor),
+                                          ),
+                                          TextResuableRob(
+                                              FontWeight.normal,
+                                              AppLocalizations.of(context)!
+                                                  .tailor_whatsapp,
+                                              16),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+
+                              TextResPopp(FontWeight.w700, "About", 20),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              // Text(
+                              //   tailorDetailsData!.avgRating.toString(),
+                              //   style: TextStyle(
+                              //       fontWeight: FontWeight.w800,
+                              //       fontFamily: 'Inter',
+                              //       fontSize: 48),
+                              // ),
+
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextResPopp(FontWeight.w700, "Reviews", 20),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      String? accessToken =
+                                          prefs.getString('userToken');
+                                      print(
+                                          "User Access Token Value is : $accessToken");
+
+                                      if (accessToken == null ||
+                                          accessToken.isEmpty) {
+                                        _showRegistrationPopup(
+                                            context); // <-- When token is null or empty
+                                      } else {
+                                        showAlertDialog(
+                                            context); // <-- When token is available
+                                      }
+                                    },
+                                    child: Icon(
+                                      Icons.edit_square,
+                                      color: AppColors.greyColor,
+                                      size: 30,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  RatingBarIndicator(
+                                    rating: tailorDetailsData!.avgRating!
+                                        .toDouble(),
+                                    direction: Axis.horizontal,
+                                    itemBuilder: (context, index) => Icon(
+                                      Icons.star,
+                                      color: AppColors.ratingBarColor,
+                                    ),
+                                    itemCount: 5,
+                                    itemSize: 32,
+                                  ),
+                                ],
+                              ),
+
+                              // Padding(
+                              //   padding: const EdgeInsets.all(16.0),
+                              //   child: Column(
+                              //     crossAxisAlignment: CrossAxisAlignment.start,
+                              //     children: ratings.map((rating) {
+                              //       return Padding(
+                              //         padding: const EdgeInsets.symmetric(
+                              //             vertical: 4.0),
+                              //         child: Row(
+                              //           children: [
+                              //             SizedBox(
+                              //               width: 100,
+                              //               child: Text(
+                              //                 rating["label"],
+                              //                 style: TextStyle(
+                              //                     fontSize: 13,
+                              //                     fontFamily: 'Poppins',
+                              //                     fontWeight: FontWeight.w400),
+                              //               ),
+                              //             ),
+                              //             SizedBox(
+                              //               width: 5,
+                              //             ),
+                              //             Expanded(
+                              //               child: LinearProgressIndicator(
+                              //                 value: double.tryParse(
+                              //                         rating["value"]
+                              //                             .toString()) ??
+                              //                     0.0, // String to double conversion
+                              //                 backgroundColor: Colors.grey[300],
+                              //                 valueColor:
+                              //                     AlwaysStoppedAnimation<Color>(
+                              //                         rating["color"]),
+                              //                 minHeight: 8,
+                              //                 borderRadius:
+                              //                     BorderRadius.circular(4),
+                              //               ),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       );
+                              //     }).toList(),
+                              //   ),
+                              // ),
+                              // Visibility(
+                              //   visible: review_List_Data.isNotEmpty,
+                              //   child: ListView.builder(
+                              //     shrinkWrap: true,
+                              //     physics: NeverScrollableScrollPhysics(),
+                              //     itemCount: review_List_Data.length,
+                              //     itemBuilder: (context, index) {
+                              //       final review = review_List_Data[index];
+                              //       return Card(
+                              //         color: Colors.white,
+                              //         elevation: 5,
+                              //         shape: RoundedRectangleBorder(
+                              //             borderRadius:
+                              //                 BorderRadius.circular(12)),
+                              //         margin: EdgeInsets.only(bottom: 12),
+                              //         child: Padding(
+                              //           padding: const EdgeInsets.all(12.0),
+                              //           child: Column(
+                              //             crossAxisAlignment:
+                              //                 CrossAxisAlignment.start,
+                              //             children: [
+                              //               Row(
+                              //                 mainAxisAlignment:
+                              //                     MainAxisAlignment
+                              //                         .spaceBetween,
+                              //                 children: [
+                              //                   Row(
+                              //                     children: [
+                              //                       CircleAvatar(
+                              //                         radius: 22,
+                              //                         backgroundColor: Colors
+                              //                                 .grey[
+                              //                             300], // Optional background color
+                              //                         child: ClipOval(
+                              //                           child:
+                              //                               CachedNetworkImage(
+                              //                             imageUrl: review
+                              //                                     .customer
+                              //                                     ?.profileUrl ??
+                              //                                 '', // Ensure it doesn't crash if null
+                              //                             width:
+                              //                                 44, // Double the radius to fit perfectly
+                              //                             height: 44,
+                              //                             fit: BoxFit.cover,
+                              //                             placeholder: (context,
+                              //                                     url) =>
+                              //                                 CircularProgressIndicator(),
+                              //                             errorWidget: (context,
+                              //                                     url, error) =>
+                              //                                 Icon(Icons.person,
+                              //                                     size: 44,
+                              //                                     color: Colors
+                              //                                         .grey), // Fallback icon
+                              //                           ),
+                              //                         ),
+                              //                       ),
+                              //                       SizedBox(width: 10),
+                              //                       Text(
+                              //                         textAlign:
+                              //                             TextAlign.start,
+                              //                         getFirstTwoWords(review
+                              //                             .customer?.name),
+                              //                         style: TextStyle(
+                              //                             fontFamily: 'Poppins',
+                              //                             fontSize: 13,
+                              //                             fontWeight:
+                              //                                 FontWeight.w400),
+                              //                       ),
+                              //                     ],
+                              //                   ),
+                              //                   Text(
+                              //                       review.reviewTime
+                              //                           .toString(),
+                              //                       style: TextStyle(
+                              //                           fontFamily: 'Inter',
+                              //                           fontSize: 8,
+                              //                           fontWeight:
+                              //                               FontWeight.w400,
+                              //                           color: Colors.grey)),
+                              //                 ],
+                              //               ),
+                              //               SizedBox(height: 6),
+                              //               RatingBarIndicator(
+                              //                 rating: (review.rating ?? 0)
+                              //                     .toDouble(),
+                              //                 direction: Axis.horizontal,
+                              //                 itemBuilder: (context, index) =>
+                              //                     Icon(
+                              //                   Icons.star,
+                              //                   color: AppColors.ratingBarColor,
+                              //                 ),
+                              //                 itemCount: 5,
+                              //                 itemSize: 20.0,
+                              //               ),
+                              //               if (review.review
+                              //                   .toString()
+                              //                   .isNotEmpty) ...[
+                              //                 SizedBox(height: 6),
+                              //                 Text(
+                              //                   review.review.toString(),
+                              //                   style: TextStyle(
+                              //                     fontFamily: 'Inter',
+                              //                     fontSize: 10,
+                              //                     fontWeight: FontWeight.w400,
+                              //                   ),
+                              //                 ),
+                              //               ],
+                              //               if (review.images != null) ...[
+                              //                 SizedBox(height: 6),
+                              //                 Visibility(
+                              //                   visible:
+                              //                       review.images!.isNotEmpty,
+                              //                   child: SizedBox(
+                              //                     height: 100,
+                              //                     child: ListView.builder(
+                              //                       scrollDirection:
+                              //                           Axis.horizontal,
+                              //                       itemCount:
+                              //                           review.images!.length,
+                              //                       itemBuilder:
+                              //                           (context, imgIndex) {
+                              //                         return Padding(
+                              //                           padding:
+                              //                               const EdgeInsets
+                              //                                   .only(
+                              //                                   right: 10),
+                              //                           child: Image.network(
+                              //                             review.images![
+                              //                                 imgIndex],
+                              //                             width: 100,
+                              //                             height: 100,
+                              //                             fit: BoxFit.cover,
+                              //                             errorBuilder:
+                              //                                 (context, error,
+                              //                                     stackTrace) {
+                              //                               return Image
+                              //                                   .network(
+                              //                                 height: 100,
+                              //                                 width: 100,
+                              //                                 'https://dummyimage.com/500x500/aaa/000000.png&text= No+Image+Available',
+                              //                                 fit: BoxFit.fill,
+                              //                               );
+                              //                             },
+                              //                           ),
+                              //                         );
+                              //                       },
+                              //                     ),
+                              //                   ),
+                              //                 ),
+                              //               ],
+                              //             ],
+                              //           ),
+                              //         ),
+                              //       );
+                              //     },
+                              //   ),
+                              // ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),));
+        ));
   }
 
   // Function to show registration popup
@@ -811,7 +809,8 @@ class _TailorFullViewState extends State<TailorFullView> {
 
             return Dialog(
               backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14)),
               child: Container(
                 height: 400,
                 width: 340,
@@ -822,7 +821,8 @@ class _TailorFullViewState extends State<TailorFullView> {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(14)),
                         color: Color(0xFFD9D9D9),
                       ),
                       child: Row(
@@ -874,12 +874,15 @@ class _TailorFullViewState extends State<TailorFullView> {
                         controller: _reviewController,
                         maxLength: 50,
                         decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.write_review_text,
+                          hintText:
+                              AppLocalizations.of(context)!.write_review_text,
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black, width: 2),
+                            borderSide:
+                                BorderSide(color: Colors.black, width: 2),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black, width: 1),
+                            borderSide:
+                                BorderSide(color: Colors.black, width: 1),
                           ),
                           hintStyle: TextStyle(
                             fontSize: 11,
@@ -924,63 +927,80 @@ class _TailorFullViewState extends State<TailorFullView> {
                               height: 60,
                               child: reviewImageList.isNotEmpty
                                   ? ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: reviewImageList.length > 3
-                                    ? 3
-                                    : reviewImageList.length,
-                                itemBuilder: (context, index) {
-                                  final imageUrl = reviewImageList[index].toString().trim();
-                                  return Stack(
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.symmetric(horizontal: 6),
-                                        width: 60,
-                                        height: 60,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.grey.shade300),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(6),
-                                          child: CachedNetworkImage(
-                                            imageUrl: imageUrl,
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) =>
-                                                Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                                            errorWidget: (context, url, error) =>
-                                                Icon(Icons.broken_image),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 0,
-                                        right: 0,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              reviewImageList.removeAt(index);
-                                            });
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.black.withOpacity(0.6),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: reviewImageList.length > 3
+                                          ? 3
+                                          : reviewImageList.length,
+                                      itemBuilder: (context, index) {
+                                        final imageUrl = reviewImageList[index]
+                                            .toString()
+                                            .trim();
+                                        return Stack(
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 6),
+                                              width: 60,
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color:
+                                                        Colors.grey.shade300),
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                              ),
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: imageUrl,
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (context, url) =>
+                                                      Center(
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                                  strokeWidth:
+                                                                      2)),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      Icon(Icons.broken_image),
+                                                ),
+                                              ),
                                             ),
-                                            padding: EdgeInsets.all(2),
-                                            child: Icon(Icons.close, size: 12, color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              )
+                                            Positioned(
+                                              top: 0,
+                                              right: 0,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    reviewImageList
+                                                        .removeAt(index);
+                                                  });
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.black
+                                                        .withOpacity(0.6),
+                                                  ),
+                                                  padding: EdgeInsets.all(2),
+                                                  child: Icon(Icons.close,
+                                                      size: 12,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    )
                                   : Center(
-                                child: Text(
-                                  "No image uploaded",
-                                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                                ),
-                              ),
+                                      child: Text(
+                                        "No image uploaded",
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.grey),
+                                      ),
+                                    ),
                             ),
                           ),
                         ],
@@ -994,91 +1014,99 @@ class _TailorFullViewState extends State<TailorFullView> {
                       child: isLoading
                           ? CircularProgressIndicator()
                           : SizedBox(
-                        height: 47,
-                        width: 120,
-                        child: Card(
-                          color: AppColors.newUpdateColor,
-                          elevation: 4,
-                          shadowColor: Colors.grey,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(color: AppColors.newUpdateColor, width: 1.5),
-                          ),
-                          child: TextButton(
-                            onPressed: () async {
-                              setState(() {
-                                isLoading = true;
-                              });
+                              height: 47,
+                              width: 120,
+                              child: Card(
+                                color: AppColors.newUpdateColor,
+                                elevation: 4,
+                                shadowColor: Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(
+                                      color: AppColors.newUpdateColor,
+                                      width: 1.5),
+                                ),
+                                child: TextButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
 
-                              String reviewText = _reviewController.text.trim();
+                                    String reviewText =
+                                        _reviewController.text.trim();
 
-                              var map = <String, dynamic>{};
-                              map['tailorId'] = widget.tailorId.toString();
-                              map['rating'] = _rating.toString();
-                              map['review'] = reviewText;
-                              map['reviewImages'] = reviewImageList;
+                                    var map = <String, dynamic>{};
+                                    map['tailorId'] =
+                                        widget.tailorId.toString();
+                                    map['rating'] = _rating.toString();
+                                    map['review'] = reviewText;
+                                    map['reviewImages'] = reviewImageList;
 
-                              // if (reviewImageList.isNotEmpty) {
-                              //
-                              // }
+                                    // if (reviewImageList.isNotEmpty) {
+                                    //
+                                    // }
 
-                              print("Review Data Map: $map");
+                                    print("Review Data Map: $map");
 
-                              try {
-                                Tailor_Review_Response_Model model =
-                                await CallService().uploadTailorReviewByCustomer(map);
+                                    try {
+                                      Tailor_Review_Response_Model model =
+                                          await CallService()
+                                              .uploadTailorReviewByCustomer(
+                                                  map);
 
-                                String message = model.message.toString();
+                                      String message = model.message.toString();
 
-                                Fluttertoast.showToast(
-                                  msg: message,
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  backgroundColor: AppColors.newUpdateColor,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
+                                      Fluttertoast.showToast(
+                                        msg: message,
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        backgroundColor:
+                                            AppColors.newUpdateColor,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0,
+                                      );
 
-                                // ✅ Close popup first
-                                if (context.mounted) Navigator.of(context).pop(true);
+                                      // ✅ Close popup first
+                                      if (context.mounted)
+                                        Navigator.of(context).pop(true);
 
-                                // ✅ Then refresh background screen
-                                updateUI();
-                                getTailorDetails(widget.tailorId);
-                                getTailorReviews(widget.tailorId);
+                                      // ✅ Then refresh background screen
+                                      updateUI();
+                                      getTailorDetails(widget.tailorId);
+                                      getTailorReviews(widget.tailorId);
 
-                                // ✅ Clear local values
-                                _reviewController.clear();
-                                _rating = 0;
-                                reviewImageList.clear();
-                              } catch (e) {
-                                Fluttertoast.showToast(
-                                  msg: "Something went wrong: $e",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                );
-                              } finally {
-                                if (mounted) {
-                                  setState(() {
-                                    isLoading = false;
-                                  });
-                                }
-                              }
-                            },
-                            child: Text(
-                              AppLocalizations.of(context)!.submit_review,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Inter',
-                                fontSize: 18,
+                                      // ✅ Clear local values
+                                      _reviewController.clear();
+                                      _rating = 0;
+                                      reviewImageList.clear();
+                                    } catch (e) {
+                                      Fluttertoast.showToast(
+                                        msg: "Something went wrong: $e",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        backgroundColor: Colors.red,
+                                        textColor: Colors.white,
+                                      );
+                                    } finally {
+                                      if (mounted) {
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      }
+                                    }
+                                  },
+                                  child: Text(
+                                    AppLocalizations.of(context)!.submit_review,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Inter',
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
                     )
                   ],
                 ),
@@ -1089,8 +1117,6 @@ class _TailorFullViewState extends State<TailorFullView> {
       },
     );
   }
-
-
 
   void _makePhoneCall(BuildContext context, String phoneNumber) async {
     final Uri callUri = Uri(scheme: 'tel', path: phoneNumber);
@@ -1116,7 +1142,8 @@ class _TailorFullViewState extends State<TailorFullView> {
     }
   }
 
-  void _showImageSourceActionSheet(BuildContext context, void Function(void Function()) parentSetState) {
+  void _showImageSourceActionSheet(
+      BuildContext context, void Function(void Function()) parentSetState) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -1151,11 +1178,13 @@ class _TailorFullViewState extends State<TailorFullView> {
                     // }
                     Navigator.pop(context); // ⚠️ ye dialog close kar raha hai
 
-                    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+                    final XFile? photo =
+                        await _picker.pickImage(source: ImageSource.camera);
                     if (photo != null) {
                       _selectedImage = File(photo.path);
                       fileName = p.basename(photo.path);
-                      extensionWithoutDot = p.extension(photo.path).substring(1);
+                      extensionWithoutDot =
+                          p.extension(photo.path).substring(1);
 
                       final uploadedUrl = await getAwsUrl(dialogSetState);
 
@@ -1171,14 +1200,16 @@ class _TailorFullViewState extends State<TailorFullView> {
                   leading: Icon(Icons.photo_library),
                   title: Text("Gallery"),
                   onTap: () async {
-                    final XFile? photo = await _picker.pickImage(source: ImageSource.gallery);
+                    final XFile? photo =
+                        await _picker.pickImage(source: ImageSource.gallery);
 
                     if (photo != null) {
                       dialogSetState(() => isUploading = true); // show loader
 
                       _selectedImage = File(photo.path);
                       fileName = p.basename(photo.path);
-                      extensionWithoutDot = p.extension(photo.path).substring(1);
+                      extensionWithoutDot =
+                          p.extension(photo.path).substring(1);
 
                       final uploadedUrl = await getAwsUrl(dialogSetState);
 
@@ -1211,13 +1242,12 @@ class _TailorFullViewState extends State<TailorFullView> {
     );
   }
 
-
-
   Future<String> getAwsUrl(StateSetter dialogSetState) async {
     String fileType = "image/$extensionWithoutDot", folder_name = "Order";
 
     try {
-      AwsResponseModel model = await CallService().getAwsUrl(fileType, folder_name);
+      AwsResponseModel model =
+          await CallService().getAwsUrl(fileType, folder_name);
       presignedUrl = model.presignedUrl.toString();
       objectUrl = model.objectUrl.toString();
       print("Presigned url is: $presignedUrl");
@@ -1237,8 +1267,6 @@ class _TailorFullViewState extends State<TailorFullView> {
       return '';
     }
   }
-
-
 
   Future<void> callPresignedUrl(String presignedUrl) async {
     if (_selectedImage == null) return;
@@ -1275,7 +1303,6 @@ class _TailorFullViewState extends State<TailorFullView> {
       );
     }
   }
-
 
   /// Helper function to format phone number for WhatsApp
   String formatPhoneNumber(String phone, {String defaultCountryCode = '91'}) {
@@ -1363,11 +1390,10 @@ class _TailorFullViewState extends State<TailorFullView> {
 
       final Uri googleMapsUrl = Uri.parse(
         'https://www.google.com/maps/dir/?api=1'
-            '&origin=$currentLatitude,$currentLongitude'
-            '&destination=$latitude,$longitude'
-            '&travelmode=driving',
+        '&origin=$currentLatitude,$currentLongitude'
+        '&destination=$latitude,$longitude'
+        '&travelmode=driving',
       );
-
 
       if (await canLaunchUrl(googleMapsUrl)) {
         await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
@@ -1378,7 +1404,6 @@ class _TailorFullViewState extends State<TailorFullView> {
       print('Error: $e');
     }
   }
-
 
   void add_Tailor_To_Favourite(String tailorId) async {
     var map = <String, dynamic>{};

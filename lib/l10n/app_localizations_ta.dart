@@ -290,10 +290,10 @@ class AppLocalizationsTa extends AppLocalizations {
       'தயவுசெய்து அனைத்து விவரங்களையும் பூர்த்தி செய்யுங்கள்';
 
   @override
-  String get myTailor => 'என் தையல்காரர்';
+  String get myTailor => 'தையல்காரர்';
 
   @override
-  String get myDresses => 'என் ஆடைகள்';
+  String get myDresses => 'ஆடைகள்';
 
   @override
   String get tailorDetail => 'தையல்காரர் விவரங்கள்';

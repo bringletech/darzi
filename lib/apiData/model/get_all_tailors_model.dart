@@ -50,28 +50,29 @@ class Data {
   int? totalReviews;
   double? avgRating;
 
-  Data(
-      {this.id,
-        this.mobileNo,
-        this.hideMobileNo,
-        this.name,
-        this.street,
-        this.city,
-        this.state,
-        this.postalCode,
-        this.country,
-        this.latitude,
-        this.longitude,
-        this.address,
-        this.profileUrl,
-        this.otp,
-        this.isOtpVerified,
-        this.deviceFcmToken,
-        this.isDeleted,
-        this.createdAt,
-        this.updatedAt,
-        this.totalReviews,
-        this.avgRating});
+  Data({
+    this.id,
+    this.mobileNo,
+    this.hideMobileNo,
+    this.name,
+    this.street,
+    this.city,
+    this.state,
+    this.postalCode,
+    this.country,
+    this.latitude,
+    this.longitude,
+    this.address,
+    this.profileUrl,
+    this.otp,
+    this.isOtpVerified,
+    this.deviceFcmToken,
+    this.isDeleted,
+    this.createdAt,
+    this.updatedAt,
+    this.totalReviews,
+    this.avgRating,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -84,7 +85,8 @@ class Data {
     postalCode = json['PostalCode'];
     country = json['Country'];
     latitude = (json['latitude'] != null) ? json['latitude'].toDouble() : null;
-    longitude = (json['longitude'] != null) ? json['longitude'].toDouble() : null;
+    longitude =
+        (json['longitude'] != null) ? json['longitude'].toDouble() : null;
     address = json['address'];
     profileUrl = json['profileUrl'];
     otp = json['otp'];
@@ -96,9 +98,9 @@ class Data {
     totalReviews = json['totalReviews'];
 
     /// 👇 This line is key to fixing the crash
-    avgRating = (json['avgRating'] != null) ? json['avgRating'].toDouble() : null;
+    avgRating =
+        (json['avgRating'] != null) ? json['avgRating'].toDouble() : null;
   }
-
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

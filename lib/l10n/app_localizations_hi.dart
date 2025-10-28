@@ -289,10 +289,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get warningMessage1 => 'कृपया सभी विवरण भरें';
 
   @override
-  String get myTailor => 'मेरा दर्जी';
+  String get myTailor => 'दर्जी';
 
   @override
-  String get myDresses => 'मेरी ड्रेसेस';
+  String get myDresses => 'ड्रेसेस';
 
   @override
   String get tailorDetail => 'दर्जी का विवरण';

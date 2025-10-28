@@ -1,167 +1,17 @@
-// import 'package:darzi/colors.dart';
-// import 'package:darzi/common/common_bottom_navigation.dart';
-// import 'package:darzi/common/widgets/tab_data.dart';
-// import 'package:darzi/pages/customer/screens/customer_Login/view/customerRegisterPage.dart';
-// import 'package:darzi/pages/customer/screens/customer_dashboard/view/customer_dashboard.dart';
-// import 'package:darzi/pages/customer/screens/customer_profile/view/customer_profile_page.dart';
-// import 'package:darzi/pages/customer/screens/customer_search/view/customer_search_page.dart';
-// import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-//
-// // Import the new routes file
-//
-// class CustomerDashboardNew extends StatefulWidget {
-//   static const TextStyle titleStyle = TextStyle(
-//     fontWeight: FontWeight.bold,
-//     fontSize: 22,
-//     color: Colors.black,
-//   );
-//
-//   final PageController tabController = PageController(initialPage: 1);
-//
-//   var selectedIndex = 1;
-//   final Locale locale;
-//
-//   CustomerDashboardNew({super.key, required this.locale,});
-//
-//   @override
-//   State<CustomerDashboardNew> createState() => _CustomerDashboardNewState();
-// }
-//
-// class _CustomerDashboardNewState extends State<CustomerDashboardNew> {
-//   final bool _isTapped = false;
-//   int selectedIndex = 1;
-//   String? accessToken;
-//   late PageController tabController;
-//   Future<void> _loadAccessToken() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final token = prefs.getString('userToken');
-//
-//     setState(() {
-//       accessToken = token;
-//       // If token is null and user tried to access Profile (index 2), reset to Home (index 1)
-//       if (token == null && selectedIndex == 2) {
-//         selectedIndex = 1;
-//         tabController.jumpToPage(selectedIndex);
-//       }
-//     });
-//   }
-//   @override
-//   void initState() {
-//     super.initState();
-//     tabController = PageController(initialPage: selectedIndex);
-//     _loadAccessToken();
-//   }
-//   void _onTabChanged(int index) async {
-//     if (index == 2 && accessToken == null) {
-//       // If user not logged in and tries to open profile, go to Register page
-//       Navigator.pushReplacement(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => CustomerregisterpagePage(locale: widget.locale),
-//         ),
-//       ); // Update to your actual route
-//       return;
-//     }
-//
-//     setState(() {
-//       //     (index) {
-//       //   setState(() {
-//       //     widget.selectedIndex = index;
-//       //     widget.tabController.jumpToPage(index);
-//       //
-//       //     print("index..............    $index");
-//       //   });
-//       // },
-//       widget.selectedIndex = index;
-//       widget.tabController.jumpToPage(index);
-//     });
-//   }
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       bottomNavigationBar: ClipRRect(
-//         borderRadius: const BorderRadius.only(
-//           topRight: Radius.circular(24),
-//           topLeft: Radius.circular(24),
-//         ),
-//         child: CircleBottomNavigation(
-//           barHeight: 80,
-//           circleSize: 65,
-//           initialSelection: widget.selectedIndex,
-//           activeIconColor: AppColors.newUpdateColor,
-//           inactiveIconColor: Colors.white,
-//           barBackgroundColor: AppColors.newUpdateColor,
-//           textColor: AppColors.newUpdateColor,
-//           hasElevationShadows: false,
-//           tabs: [
-//             TabData(
-//               onClick: () {
-//
-//               },
-//               icon: Icons.search,
-//               iconSize: 35,
-//               title: '',
-//               fontSize: 19,
-//               fontWeight: FontWeight.bold,
-//             ),
-//             TabData(
-//               onClick: () {
-//               },
-//               icon: Icons.grid_view,
-//               iconSize: 35,
-//               title: '',
-//               fontSize: 19,
-//               fontWeight: FontWeight.bold,
-//             ),
-//             TabData(
-//               onClick: () {
-//
-//               },
-//               icon: Icons.person,
-//               iconSize: 35,
-//               title: '',
-//               fontSize: 19,
-//               fontWeight: FontWeight.bold,
-//             ),
-//
-//           ],
-//           onTabChangedListener: _onTabChanged,
-//
-//         ),
-//       ),
-//       body: PageView(
-//         controller: widget.tabController,
-//         physics: const NeverScrollableScrollPhysics(),
-//         children: <Widget>[
-//           Center(
-//             child: CustomerSearchPage(locale: widget.locale),
-//           ),
-//           Center(
-//             child: CustomerHomeScreen(locale: widget.locale),
-//           ),
-//           Center(
-//             child: CustomerProfilePage(locale: widget.locale),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+// ignore_for_file: must_be_immutable
+
 import 'package:darzi/colors.dart';
 import 'package:darzi/common/common_bottom_navigation.dart';
 import 'package:darzi/common/widgets/tab_data.dart';
 import 'package:darzi/l10n/app_localizations.dart';
 import 'package:darzi/pages/customer/screens/customer_Login/view/customerRegisterPage.dart';
 import 'package:darzi/pages/customer/screens/customer_dashboard/view/customer_dashboard.dart';
+import 'package:darzi/pages/customer/screens/customer_dashboard/view/search_tailer_detail.dart';
 import 'package:darzi/pages/customer/screens/customer_search/view/customer_search_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:darzi/pages/customer/screens/customer_shop/customer_fabric_address.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../customer_profile/view/customer_profile_page1.dart';
 
 class CustomerDashboardNew extends StatefulWidget {
@@ -176,15 +26,16 @@ class CustomerDashboardNew extends StatefulWidget {
   var selectedIndex = 1;
   final Locale locale;
 
-  CustomerDashboardNew({super.key, required this.locale,});
+  CustomerDashboardNew({
+    super.key,
+    required this.locale,
+  });
 
   @override
   State<CustomerDashboardNew> createState() => _CustomerDashboardNewState();
 }
 
 class _CustomerDashboardNewState extends State<CustomerDashboardNew> {
-  bool _isTapped = false;
-
   // Function to check access token
   Future<bool> _checkAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -206,13 +57,22 @@ class _CustomerDashboardNewState extends State<CustomerDashboardNew> {
           backgroundColor: Colors.white,
           title: Container(
             margin: EdgeInsets.only(left: 16),
-            child: Text(AppLocalizations.of(context)!.not_registered,
-              style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Poppins', fontSize: 20),
+            child: Text(
+              AppLocalizations.of(context)!.not_registered,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Poppins',
+                  fontSize: 20),
             ),
           ),
           content: Container(
-            child: Text(AppLocalizations.of(context)!.login_message,
-              style: TextStyle(fontWeight: FontWeight.w400, fontFamily: 'Inter', fontSize: 16, color: Colors.grey),
+            child: Text(
+              AppLocalizations.of(context)!.login_message,
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  color: Colors.grey),
             ),
           ),
           actions: [
@@ -228,13 +88,15 @@ class _CustomerDashboardNewState extends State<CustomerDashboardNew> {
                     shadowColor: Colors.grey,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: AppColors.newUpdateColor, width: 1.5),
+                      side: BorderSide(
+                          color: AppColors.newUpdateColor, width: 1.5),
                     ),
                     child: TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text(AppLocalizations.of(context)!.cancel,
+                      child: Text(
+                        AppLocalizations.of(context)!.cancel,
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w600,
@@ -262,11 +124,13 @@ class _CustomerDashboardNewState extends State<CustomerDashboardNew> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CustomerregisterpagePage(locale:widget.locale),
+                            builder: (context) =>
+                                CustomerregisterpagePage(locale: widget.locale),
                           ),
                         );
                       },
-                      child: Text(AppLocalizations.of(context)!.buttonContinue,
+                      child: Text(
+                        AppLocalizations.of(context)!.buttonContinue,
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w600,
@@ -306,77 +170,72 @@ class _CustomerDashboardNewState extends State<CustomerDashboardNew> {
     });
   }
 
+  int selectedIndex = 0;
+  late List<Widget> _pages;
+
+  void onTabTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      CustomerHomeScreen(locale: widget.locale),
+      SearchTailerDetail(),
+      CustomerHomeScreen(locale: widget.locale),
+      CustomerFabricAddress(),
+      CustomerProfilePage(locale: widget.locale),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topRight: Radius.circular(24),
-          topLeft: Radius.circular(24),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: AppColors.newUpdateColor, // Orange background
         ),
-        child: CircleBottomNavigation(
-          barHeight: 80,
-          circleSize: 65,
-          initialSelection: widget.selectedIndex,
-          activeIconColor: AppColors.newUpdateColor,
-          inactiveIconColor: Colors.white,
-          barBackgroundColor: AppColors.newUpdateColor,
-          textColor: AppColors.newUpdateColor,
-          hasElevationShadows: false,
-          tabs: [
-            TabData(
-              onClick: () {
-                // Handle search tab click
-              },
-              icon: Icons.search,
-              iconSize: 35,
-              title: '',
-              fontSize: 19,
-              fontWeight: FontWeight.bold,
+        child: BottomNavigationBar(
+          currentIndex: selectedIndex,
+          onTap: onTabTapped,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: AppColors.blackTextColor, // active
+          unselectedItemColor: AppColors.textColor, // inactive
+          selectedLabelStyle:
+              GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 10),
+          unselectedLabelStyle:
+              GoogleFonts.poppins(fontWeight: FontWeight.normal, fontSize: 10),
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: "Home",
             ),
-            TabData(
-              onClick: () {
-                // Handle home tab click
-              },
-              icon: Icons.grid_view,
-              iconSize: 35,
-              title: '',
-              fontSize: 19,
-              fontWeight: FontWeight.bold,
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: "Shop",
             ),
-            TabData(
-              onClick: () {
-                // Handle profile tab click with token check
-                _handleTabChange(2);
-              },
-              icon: Icons.person,
-              iconSize: 35,
-              title: '',
-              fontSize: 19,
-              fontWeight: FontWeight.bold,
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat_bubble_outline),
+              label: "Messages",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_border),
+              label: "Favorites",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_2_outlined),
+              label: "Profile",
             ),
           ],
-          onTabChangedListener: (index) {
-            _handleTabChange(index);
-          },
         ),
       ),
-      body: PageView(
-        controller: widget.tabController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: <Widget>[
-          Center(
-            child: CustomerSearchPage(locale: widget.locale),
-          ),
-          Center(
-            child: CustomerHomeScreen(locale: widget.locale),
-          ),
-          Center(
-            child: CustomerProfilePage(locale: widget.locale),
-          ),
-        ],
-      ),
+      body: _pages[selectedIndex],
     );
   }
 }

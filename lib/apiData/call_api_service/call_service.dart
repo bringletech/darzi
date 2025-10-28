@@ -53,35 +53,34 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_connect/connect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CallService extends GetConnect{
-
+class CallService extends GetConnect {
   // Tailor
   //1). For Getting Otp(For Tailor)
   Future<LoginResponseModel> userLogin(dynamic body) async {
     httpClient.baseUrl = apiBaseUrl;
-      var res = await post('tailor/get-otp', body, headers: {
-        'accept': 'application/json',
-      });
-      print("response is ${res.statusCode}");
-      if (res.statusCode == 200) {
-        // If the server returns a 200 OK response, parse the JSON
-        print("Login Response is : ${res.statusCode.toString()}");
-        return LoginResponseModel.fromJson(res.body);
-      } else {
-
-        throw Fluttertoast.showToast(
-            msg: res.body["message"],
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.black,
-            textColor: Colors.white,
-            fontSize: 16.0);
+    var res = await post('tailor/get-otp', body, headers: {
+      'accept': 'application/json',
+    });
+    print("response is ${res.statusCode}");
+    if (res.statusCode == 200) {
+      // If the server returns a 200 OK response, parse the JSON
+      print("Login Response is : ${res.statusCode.toString()}");
+      return LoginResponseModel.fromJson(res.body);
+    } else {
+      throw Fluttertoast.showToast(
+          msg: res.body["message"],
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
   //2). For Verifying Otp
-  Future<OtpVerificationResponseModel> tailorOtpVerification(dynamic body) async {
+  Future<OtpVerificationResponseModel> tailorOtpVerification(
+      dynamic body) async {
     httpClient.baseUrl = apiBaseUrl;
     var res = await post('tailor/otp-verification', body, headers: {
       'accept': 'application/json',
@@ -89,7 +88,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Login Response is : ${res.statusCode.toString()}");
       return OtpVerificationResponseModel.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -102,7 +101,8 @@ class CallService extends GetConnect{
   }
 
   //3). For Registering New Tailor
-  Future<Tailor_Registration_Response_Model> tailor_registration(dynamic body) async {
+  Future<Tailor_Registration_Response_Model> tailor_registration(
+      dynamic body) async {
     httpClient.baseUrl = apiBaseUrl;
     var res = await post('tailor/register', body, headers: {
       'accept': 'application/json',
@@ -111,7 +111,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Registration Response is : ${res.statusCode.toString()}");
       return Tailor_Registration_Response_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -149,7 +149,8 @@ class CallService extends GetConnect{
   }
 
   //5). For Getting Current Tailor Completed Dress List
-  Future<Tailor_Completed_Dress_Response_Model> getCurrentTailorCompletedDress() async {
+  Future<Tailor_Completed_Dress_Response_Model>
+      getCurrentTailorCompletedDress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -174,15 +175,18 @@ class CallService extends GetConnect{
   }
 
   //6). For Getting Current Tailor Completed Dress List(Filter By Month)
-  Future<Tailor_Completed_Dress_Response_Model> getCurrentTailorFilterCompletedDress(String month, String year) async {
+  Future<Tailor_Completed_Dress_Response_Model>
+      getCurrentTailorFilterCompletedDress(String month, String year) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await get('tailor/getFilteredCompletedDressessOfTailor?month=$month&year=$year', headers: {
-      'accept': 'application/json',
-      'Authorization': "Bearer $accessToken",
-    });
+    var res = await get(
+        'tailor/getFilteredCompletedDressessOfTailor?month=$month&year=$year',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': "Bearer $accessToken",
+        });
     print("User Access Token Value is : ${res.statusCode}");
     if (res.statusCode == 200) {
       return Tailor_Completed_Dress_Response_Model.fromJson(res.body);
@@ -199,15 +203,17 @@ class CallService extends GetConnect{
   }
 
   //7). For Getting Specific Completed Order Details
-  Future<Specific_Stitching_History_Response_Model> getSpecificHistoryOrderDetails(String orderId) async {
+  Future<Specific_Stitching_History_Response_Model>
+      getSpecificHistoryOrderDetails(String orderId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await get('tailor/getSpecificCompletedDressOfTailor/$orderId', headers: {
-      'accept': 'application/json',
-      'Authorization': "Bearer $accessToken",
-    });
+    var res = await get('tailor/getSpecificCompletedDressOfTailor/$orderId',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': "Bearer $accessToken",
+        });
     print("User Access Token Value is : ${res.statusCode}");
     if (res.statusCode == 200) {
       return Specific_Stitching_History_Response_Model.fromJson(res.body);
@@ -248,9 +254,9 @@ class CallService extends GetConnect{
     }
   }
 
-
   //9). For Getting Current Tailor Details
-  Future<My_Tailor_Details_Respone_Model> getMyTailorDetails(String tailorId) async {
+  Future<My_Tailor_Details_Respone_Model> getMyTailorDetails(
+      String tailorId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -267,7 +273,8 @@ class CallService extends GetConnect{
       headers['Authorization'] = "Bearer $accessToken";
     }
 
-    var res = await get('tailor/getSpecificTailorDetails/$tailorId', headers: headers);
+    var res = await get('tailor/getSpecificTailorDetails/$tailorId',
+        headers: headers);
     print("Specific Tailor Details Response is ${res.statusCode}");
 
     if (res.statusCode == 200) {
@@ -286,16 +293,17 @@ class CallService extends GetConnect{
     }
   }
 
-
   //10). For Getting Specific Customer's Measurement  Details
-  Future<Specific_Cutomer_Measurement_Response_Model> getSpecificCustomerMeasurementDetails(String customerId) async {
+  Future<Specific_Cutomer_Measurement_Response_Model>
+      getSpecificCustomerMeasurementDetails(String customerId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     print("User Access Token Value is : $customerId");
     httpClient.baseUrl = apiBaseUrl;
 
-    var res = await get('customer/getSpecificCustomersDetails/$customerId', headers: {
+    var res =
+        await get('customer/getSpecificCustomersDetails/$customerId', headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });
@@ -315,14 +323,16 @@ class CallService extends GetConnect{
   }
 
   //11). For Getting Specific Customer Dress Details
-  Future<Specific_Customer_Dress_Details_Model> getSpecificCustomerDressDetails(String customerId) async {
+  Future<Specific_Customer_Dress_Details_Model> getSpecificCustomerDressDetails(
+      String customerId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     print("User Access Token Value is : $customerId");
     httpClient.baseUrl = apiBaseUrl;
 
-    var res = await get('customer/getSpecificCustomerOrders/$customerId', headers: {
+    var res =
+        await get('customer/getSpecificCustomerOrders/$customerId', headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });
@@ -342,7 +352,8 @@ class CallService extends GetConnect{
   }
 
   //12). For Updating Measurement Details
-  Future<Update_Customer_Measurement_Details_Model> updateCustomerMeasurementDressDetails(dynamic body) async {
+  Future<Update_Customer_Measurement_Details_Model>
+      updateCustomerMeasurementDressDetails(dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -355,7 +366,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Update Measurement Response is : ${res.statusCode.toString()}");
       return Update_Customer_Measurement_Details_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -382,7 +393,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Update Measurement Response is : ${res.statusCode.toString()}");
       return Mobile_Verify_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -409,7 +420,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Update Measurement Response is : ${res.statusCode.toString()}");
       return Order_Status_Change_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -422,7 +433,8 @@ class CallService extends GetConnect{
   }
 
   //15). For Getting The Specific Dress Details
-  Future<Specific_Order_Detail_Response_Model> getSpecificDreesDetails(String dressId) async {
+  Future<Specific_Order_Detail_Response_Model> getSpecificDreesDetails(
+      String dressId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -436,7 +448,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Update Measurement Response is : ${res.statusCode.toString()}");
       return Specific_Order_Detail_Response_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -449,7 +461,8 @@ class CallService extends GetConnect{
   }
 
   //16). For Updating The Dress Status
-  Future<CustomerDeleteResponseModel> removeCustomerFromList(dynamic body) async {
+  Future<CustomerDeleteResponseModel> removeCustomerFromList(
+      dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -462,9 +475,10 @@ class CallService extends GetConnect{
     print("Map Value is ${res.body}");
     print("Map Value is ${res.statusCode}");
     if (res.statusCode == 200) {
-      print("Update Delete Customer Response is : ${res.statusCode.toString()}");
+      print(
+          "Update Delete Customer Response is : ${res.statusCode.toString()}");
       return CustomerDeleteResponseModel.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -490,7 +504,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Delete Tailor Response is : ${res.statusCode.toString()}");
       return Tailor_Account_Delete_Response_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -503,13 +517,15 @@ class CallService extends GetConnect{
   }
 
 //18). For Calling Aws in For Uploading Profile Picture User/Counsellor
-  Future<AwsResponseModel> getAwsUrl(String fileType,folder_name) async {
+  Future<AwsResponseModel> getAwsUrl(String fileType, folder_name) async {
     httpClient.baseUrl = apiBaseUrl;
     print("Story Response is ${fileType}");
     print("Story Response is ${folder_name}");
-    var res = await get('aws/aws-s3-puturl?fileType=$fileType&folderName=$folder_name', headers: {
-      'accept': 'application/json',
-    });
+    var res = await get(
+        'aws/aws-s3-puturl?fileType=$fileType&folderName=$folder_name',
+        headers: {
+          'accept': 'application/json',
+        });
 
     print("Story Response is ${res.statusCode}");
     if (res.statusCode == 200) {
@@ -527,12 +543,13 @@ class CallService extends GetConnect{
   }
 
 //19). For Updating Tailor Profile(With Image/Without Image)
-  Future<Tailor_Profile_Update_Response_Model> updateTailorProfile(dynamic body) async {
+  Future<Tailor_Profile_Update_Response_Model> updateTailorProfile(
+      dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await put('tailor/updateTailorDetails',body, headers: {
+    var res = await put('tailor/updateTailorDetails', body, headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });
@@ -558,7 +575,7 @@ class CallService extends GetConnect{
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await post('order/addCustomerOrder',body, headers: {
+    var res = await post('order/addCustomerOrder', body, headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });
@@ -579,12 +596,13 @@ class CallService extends GetConnect{
   }
 
 //21). For Adding New Order For Specific Customer
-  Future<Add_New_Customer_Order_Response_Model> addNewCustomerOrder(dynamic body) async {
+  Future<Add_New_Customer_Order_Response_Model> addNewCustomerOrder(
+      dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await post('order/addNewOrder',body, headers: {
+    var res = await post('order/addNewOrder', body, headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });
@@ -611,7 +629,7 @@ class CallService extends GetConnect{
     print("User Access Token Value is : $accessToken");
     print("User Access Token Value is : $body");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await patch('tailor/toggle-hide-mobile-no',body, headers: {
+    var res = await patch('tailor/toggle-hide-mobile-no', body, headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });
@@ -632,13 +650,14 @@ class CallService extends GetConnect{
   }
 
   //23). For Enabling Tailor Notification
-  Future<Tailor_Notification_Disable_Response_Model> enable_tailor_number(dynamic body) async {
+  Future<Tailor_Notification_Disable_Response_Model> enable_tailor_number(
+      dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     print("User Access Token Value is : $body");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await patch('tailor/toggle-notification',body, headers: {
+    var res = await patch('tailor/toggle-notification', body, headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });
@@ -658,7 +677,6 @@ class CallService extends GetConnect{
     }
   }
 
-
   //Customer
 //1). For Getting Otp(For Customer)
   Future<LoginResponseModel> customerLogin(dynamic body) async {
@@ -670,7 +688,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Login Response is : ${res.statusCode.toString()}");
       return LoginResponseModel.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -683,7 +701,8 @@ class CallService extends GetConnect{
   }
 
   //2). For Verifying Otp
-  Future<Customer_Otp_Verification_Model> customerOtpVerification(dynamic body) async {
+  Future<Customer_Otp_Verification_Model> customerOtpVerification(
+      dynamic body) async {
     httpClient.baseUrl = apiBaseUrl;
     var res = await post('customer/otp-verification', body, headers: {
       'accept': 'application/json',
@@ -692,7 +711,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Login Response is : ${res.statusCode.toString()}");
       return Customer_Otp_Verification_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -705,7 +724,8 @@ class CallService extends GetConnect{
   }
 
   //3). For Registering New Customer
-  Future<Customer_Register_Response_Model> customer_registeration(dynamic body) async {
+  Future<Customer_Register_Response_Model> customer_registeration(
+      dynamic body) async {
     httpClient.baseUrl = apiBaseUrl;
     var res = await post('customer/register', body, headers: {
       'accept': 'application/json',
@@ -715,7 +735,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Customer Register Response is : ${res.statusCode.toString()}");
       return Customer_Register_Response_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -728,7 +748,8 @@ class CallService extends GetConnect{
   }
 
   //4). For updating details in profile of customer
-  Future<Update_Customer_Profile_response_Model> customerUpdateProfile(dynamic body) async {
+  Future<Update_Customer_Profile_response_Model> customerUpdateProfile(
+      dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("Customer Access Token is : $accessToken");
@@ -743,7 +764,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Login Response is : ${res.statusCode.toString()}");
       return Update_Customer_Profile_response_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -786,7 +807,6 @@ class CallService extends GetConnect{
     print("User Access Token Value is : $accessToken");
 
     httpClient.baseUrl = apiBaseUrl;
-
     // Conditionally add Authorization header
     final headers = {
       'accept': 'application/json',
@@ -810,7 +830,6 @@ class CallService extends GetConnect{
       throw Exception(res.body["message"] ?? "API call failed");
     }
   }
-
 
   //7). For Getting My Tailor List And Order List
   Future<Get_Current_Customer_Response_Model> getMyTailorList_order() async {
@@ -861,7 +880,8 @@ class CallService extends GetConnect{
   }
 
 //9). For Getting My Tailor Review List
-  Future<Get_Customer_Tailor_Reviews_Response_Model> get_Tailor_Review_List(String tailorId) async {
+  Future<Get_Customer_Tailor_Reviews_Response_Model> get_Tailor_Review_List(
+      String tailorId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -878,7 +898,8 @@ class CallService extends GetConnect{
       headers['Authorization'] = "Bearer $accessToken";
     }
 
-    var res = await get('tailor/getTailorReviews?tailorId=$tailorId', headers: headers);
+    var res = await get('tailor/getTailorReviews?tailorId=$tailorId',
+        headers: headers);
 
     print("Response is : ${res.statusCode}");
 
@@ -898,17 +919,18 @@ class CallService extends GetConnect{
     }
   }
 
-
   //10). For Getting My Tailor List And Order List
-  Future<Tailor_List_Response_Model> getMyTailorList(int page,int pageLimit) async {
+  Future<Tailor_List_Response_Model> getMyTailorList(
+      int page, int pageLimit) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await get('customer/getMyTailors?page=$page&limit=$pageLimit', headers: {
-      'accept': 'application/json',
-      'Authorization': "Bearer $accessToken",
-    });
+    var res = await get('customer/getMyTailors?page=$page&limit=$pageLimit',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': "Bearer $accessToken",
+        });
     if (res.statusCode == 200) {
       return Tailor_List_Response_Model.fromJson(res.body);
     } else {
@@ -924,7 +946,8 @@ class CallService extends GetConnect{
   }
 
   //11). For Getting Specific Customer Dress Details
-  Future<Specific_Customer_Dress_Detail_Response_Model> getCustomerSpecificDressDetail(String dressId) async {
+  Future<Specific_Customer_Dress_Detail_Response_Model>
+      getCustomerSpecificDressDetail(String dressId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -948,7 +971,8 @@ class CallService extends GetConnect{
   }
 
   //12). For Getting Specific Customer Notification Details
-  Future<SpecificNotificationResponseModel> getCustomerSpecificNotificationDetail(String notificationId) async {
+  Future<SpecificNotificationResponseModel>
+      getCustomerSpecificNotificationDetail(String notificationId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -972,15 +996,18 @@ class CallService extends GetConnect{
   }
 
   //13). For Getting Specific Tailor Review Details
-  Future<Specific_Notification_Review_Response_Model> getSpecificTailorReviewNotificationDetail(String notificationId) async {
+  Future<Specific_Notification_Review_Response_Model>
+      getSpecificTailorReviewNotificationDetail(String notificationId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await get('notification/getTailorReviewsByNotificationId/$notificationId/reviews', headers: {
-      'accept': 'application/json',
-      'Authorization': "Bearer $accessToken",
-    });
+    var res = await get(
+        'notification/getTailorReviewsByNotificationId/$notificationId/reviews',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': "Bearer $accessToken",
+        });
     if (res.statusCode == 200) {
       return Specific_Notification_Review_Response_Model.fromJson(res.body);
     } else {
@@ -996,7 +1023,8 @@ class CallService extends GetConnect{
   }
 
   //14). For Getting Specific Customer Payment
-  Future<Receive_Payment_Response_Model> customerDressPayment(dynamic body) async {
+  Future<Receive_Payment_Response_Model> customerDressPayment(
+      dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -1008,7 +1036,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Dress Payment Response is : ${res.statusCode.toString()}");
       return Receive_Payment_Response_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -1021,7 +1049,8 @@ class CallService extends GetConnect{
   }
 
   //15). For Adding Specific Tailor As A Favourite
-  Future<Customer_Add_To_Favourite_Response_Model> add_Tailor_To_Favourites(dynamic body) async {
+  Future<Customer_Add_To_Favourite_Response_Model> add_Tailor_To_Favourites(
+      dynamic body) async {
     httpClient.baseUrl = apiBaseUrl;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
@@ -1034,7 +1063,7 @@ class CallService extends GetConnect{
     print("Login Response is : ${res.statusCode.toString()}");
     if (res.statusCode == 200) {
       return Customer_Add_To_Favourite_Response_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -1047,7 +1076,8 @@ class CallService extends GetConnect{
   }
 
   //16). For Getting Tailor Review
-  Future<Get_Tailor_Review_Response_Model> getCurrentTailorReviewDetails() async {
+  Future<Get_Tailor_Review_Response_Model>
+      getCurrentTailorReviewDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -1072,15 +1102,17 @@ class CallService extends GetConnect{
   }
 
   //17). For Getting Tailor Monthly Sales
-  Future<Monthly_Sales_Tailor_Response_Model> getTailorMonthlySales(String month, String year) async {
+  Future<Monthly_Sales_Tailor_Response_Model> getTailorMonthlySales(
+      String month, String year) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await get('order/getMonthlyPerformance?month=$month&year=$year', headers: {
-      'accept': 'application/json',
-      'Authorization': "Bearer $accessToken",
-    });
+    var res = await get('order/getMonthlyPerformance?month=$month&year=$year',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': "Bearer $accessToken",
+        });
     print("Tailor monthly salesResponse is ${res.statusCode}");
     if (res.statusCode == 200) {
       return Monthly_Sales_Tailor_Response_Model.fromJson(res.body);
@@ -1097,7 +1129,8 @@ class CallService extends GetConnect{
   }
 
   //18). For Getting Outstanding Balance Of Tailor
-  Future<Tailor_Outstanding_Balance_Response_Model> getTailorOutstandingBalance() async {
+  Future<Tailor_Outstanding_Balance_Response_Model>
+      getTailorOutstandingBalance() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -1120,7 +1153,6 @@ class CallService extends GetConnect{
           fontSize: 16.0);
     }
   }
-
 
   //19). For Getting Cancelled order
   Future<GetCancelled_Order_Response_Model> getCancelledOrder() async {
@@ -1148,15 +1180,17 @@ class CallService extends GetConnect{
   }
 
   //20). For Getting PaymentDone order
-  Future<GetPaymentDoneListResponseModel> getPaymentDoneOrder(String month, String year) async {
+  Future<GetPaymentDoneListResponseModel> getPaymentDoneOrder(
+      String month, String year) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await get('tailor/getPaymentReceived?month=$month&year=$year', headers: {
-      'accept': 'application/json',
-      'Authorization': "Bearer $accessToken",
-    });
+    var res = await get('tailor/getPaymentReceived?month=$month&year=$year',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': "Bearer $accessToken",
+        });
     print(" Received Payment order Response is ${res.statusCode}");
     if (res.statusCode == 200) {
       return GetPaymentDoneListResponseModel.fromJson(res.body);
@@ -1198,7 +1232,8 @@ class CallService extends GetConnect{
   }
 
   //22). For Reopening Cancelled Order
-  Future<Re_Open_Cancelled_Order_Response_Model> reopenOrder(dynamic body) async {
+  Future<Re_Open_Cancelled_Order_Response_Model> reopenOrder(
+      dynamic body) async {
     print("otp body value is $body");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
@@ -1223,16 +1258,19 @@ class CallService extends GetConnect{
   }
 
   //23). For Getting Customer Payment History List
-  Future<Customer_Payment_History_Response_Model> getPaymentHistory(String customerId,page,limit) async {
+  Future<Customer_Payment_History_Response_Model> getPaymentHistory(
+      String customerId, page, limit) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     print("User Customer Id Value is : $customerId");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await get('order/history?customerId=$customerId&page=$page&limit=$limit', headers: {
-      'accept': 'application/json',
-      'Authorization': "Bearer $accessToken",
-    });
+    var res = await get(
+        'order/history?customerId=$customerId&page=$page&limit=$limit',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': "Bearer $accessToken",
+        });
     print("Notification Response is ${res.statusCode}");
     if (res.statusCode == 200) {
       return Customer_Payment_History_Response_Model.fromJson(res.body);
@@ -1249,7 +1287,8 @@ class CallService extends GetConnect{
   }
 
   //24). For Getting Customer Payment History List
-  Future<Particular_Customer_Order_Payment_History_Response_Model> getParticularOrderPaymentHistory(String orderId) async {
+  Future<Particular_Customer_Order_Payment_History_Response_Model>
+      getParticularOrderPaymentHistory(String orderId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
@@ -1261,7 +1300,8 @@ class CallService extends GetConnect{
     });
     print("Notification Response is ${res.statusCode}");
     if (res.statusCode == 200) {
-      return Particular_Customer_Order_Payment_History_Response_Model.fromJson(res.body);
+      return Particular_Customer_Order_Payment_History_Response_Model.fromJson(
+          res.body);
     } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
@@ -1288,7 +1328,7 @@ class CallService extends GetConnect{
     if (res.statusCode == 200) {
       print("Delete Tailor Response is : ${res.statusCode.toString()}");
       return Customer_Delete_Account_Response_Model.fromJson(res.body);
-    }else{
+    } else {
       throw Fluttertoast.showToast(
           msg: res.body["message"],
           toastLength: Toast.LENGTH_SHORT,
@@ -1301,12 +1341,13 @@ class CallService extends GetConnect{
   }
 
 //26). For Updating Customer Profile(With Image/Without Image)
-  Future<Customer_Update_Response_Model> updateCustomerProfile(dynamic body) async {
+  Future<Customer_Update_Response_Model> updateCustomerProfile(
+      dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await put('customer/updateCustomerDetails',body, headers: {
+    var res = await put('customer/updateCustomerDetails', body, headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });
@@ -1326,14 +1367,14 @@ class CallService extends GetConnect{
     }
   }
 
-
 //27).For Uploading Tailor Review By Customer(With Image/Without Image)
-  Future<Tailor_Review_Response_Model> uploadTailorReviewByCustomer(dynamic body) async {
+  Future<Tailor_Review_Response_Model> uploadTailorReviewByCustomer(
+      dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await post('tailor/addTailorReview',body, headers: {
+    var res = await post('tailor/addTailorReview', body, headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });
@@ -1354,13 +1395,14 @@ class CallService extends GetConnect{
   }
 
   //28). For Enabling Customer Notification
-  Future<Tailor_Notification_Disable_Response_Model> enable_customer_number(dynamic body) async {
+  Future<Tailor_Notification_Disable_Response_Model> enable_customer_number(
+      dynamic body) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('userToken');
     print("User Access Token Value is : $accessToken");
     print("User Access Token Value is : $body");
     httpClient.baseUrl = apiBaseUrl;
-    var res = await patch('customer/toggle-notification',body, headers: {
+    var res = await patch('customer/toggle-notification', body, headers: {
       'accept': 'application/json',
       'Authorization': "Bearer $accessToken",
     });

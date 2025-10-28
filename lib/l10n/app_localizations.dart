@@ -661,13 +661,13 @@ abstract class AppLocalizations {
   /// No description provided for @myTailor.
   ///
   /// In en, this message translates to:
-  /// **'My Tailor'**
+  /// **'Tailor'**
   String get myTailor;
 
   /// No description provided for @myDresses.
   ///
   /// In en, this message translates to:
-  /// **'My Dresses'**
+  /// **'Dresses'**
   String get myDresses;
 
   /// No description provided for @tailorDetail.

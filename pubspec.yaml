@@ -41,6 +41,10 @@ dependencies:
   change_app_package_name: ^1.5.0
   rename_app: ^1.6.3
   auto_size_text: any
+  google_fonts: ^6.3.2
+  lucide_icons: ^0.257.0
+  font_awesome_flutter: ^10.10.0
+  easy_stepper: ^0.9.1
 
 
 

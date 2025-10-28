@@ -288,10 +288,10 @@ class AppLocalizationsGu extends AppLocalizations {
   String get warningMessage1 => 'કૃપા કરીને તમામ વિગતો ભરો';
 
   @override
-  String get myTailor => 'મારો દરજી';
+  String get myTailor => 'દરજી';
 
   @override
-  String get myDresses => 'મારા ડ્રેસ';
+  String get myDresses => 'ડ્રેસ';
 
   @override
   String get tailorDetail => 'દરજીની વિગતો';

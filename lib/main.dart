@@ -232,3 +232,134 @@ class CustomMonthYearPickerLocalizationsDelegate
   @override
   bool shouldReload(covariant LocalizationsDelegate old) => false;
 }
+
+// import 'package:darzi/l10n/app_localizations.dart';
+// import 'package:darzi/select_language/select_language.dart';
+// import 'package:darzi/splash_screen.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_localizations/flutter_localizations.dart';
+// import 'package:get/get.dart';
+// import 'package:month_year_picker/month_year_picker.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'firebase_options.dart';
+// import 'l10n/l10n.dart';
+// import 'l10n/month_year_picker_mr.dart';
+
+// final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+//     FlutterLocalNotificationsPlugin();
+// final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+// /// Background handler
+// Future<void> backgroundMessageHandler(RemoteMessage message) async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+//   print("Handling background message: ${message.messageId}");
+// }
+
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(
+//       options:
+//           DefaultFirebaseOptions.currentPlatform); // Notification permissions
+//   await FirebaseMessaging.instance
+//       .requestPermission(alert: true, badge: true, sound: true);
+//   String? token = await FirebaseMessaging.instance.getToken();
+//   if (token != null) {
+//     final prefs = await SharedPreferences.getInstance();
+//     await prefs.setString("deviceToken", token);
+//   }
+//   await initializeLocalNotifications();
+//   FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler); // Load
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   String? savedLangCode = prefs.getString('selectedLanguage');
+//   Locale initialLocale =
+//       savedLangCode != null ? Locale(savedLangCode) : const Locale('en');
+//   runApp(MyApp(initialLocale: initialLocale));
+// }
+
+// Future<void> initializeLocalNotifications() async {
+//   const AndroidInitializationSettings androidSettings =
+//       AndroidInitializationSettings('ic_stat_darzi');
+//   final DarwinInitializationSettings iosSettings = DarwinInitializationSettings(
+//     requestAlertPermission: true,
+//     requestBadgePermission: true,
+//     requestSoundPermission: true,
+//   );
+//   final InitializationSettings settings =
+//       InitializationSettings(android: androidSettings, iOS: iosSettings);
+//   await flutterLocalNotificationsPlugin.initialize(settings);
+// }
+
+// /// MyApp
+// class MyApp extends StatefulWidget {
+//   final Locale initialLocale;
+//   const MyApp({Key? key, required this.initialLocale}) : super(key: key);
+//   static _MyAppState? of(BuildContext context) =>
+//       context.findAncestorStateOfType<_MyAppState>();
+//   @override
+//   State<MyApp> createState() => _MyAppState();
+// }
+
+// class _MyAppState extends State<MyApp> {
+//   late Locale _locale;
+//   @override
+//   void initState() {
+//     super.initState();
+//     _locale = widget.initialLocale;
+//   }
+
+//   void setLocale(Locale locale) {
+//     setState(() {
+//       _locale = locale;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return GetMaterialApp(
+//       navigatorKey: navigatorKey,
+//       debugShowCheckedModeBanner: false,
+//       locale: _locale,
+//       supportedLocales: L10n.all,
+//       localizationsDelegates: const [
+//         AppLocalizations.delegate,
+//         GlobalMaterialLocalizations.delegate,
+//         GlobalWidgetsLocalizations.delegate,
+//         GlobalCupertinoLocalizations.delegate,
+//         MonthYearPickerLocalizations.delegate,
+//         CustomMonthYearPickerLocalizationsDelegate(),
+//       ],
+//       initialRoute: '/',
+//       getPages: [
+//         GetPage(
+//             name: '/', page: () => SplashScreen(onChangeLanguage: setLocale)),
+//         GetPage(
+//           name: '/select_language',
+//           page: () => SelectLanguage(onChangeLanguage: setLocale),
+//         ), // GetPage( // name: '/tailor', // page: () => TailorDashboardNew( // locale: _locale, // )), // GetPage( // name: '/customer', // page: () => CustomerDashboardNew( // locale: _locale, // )),
+//       ],
+//     );
+//   }
+// }
+
+// ///
+// // MonthYearPicker Localization
+// class CustomMonthYearPickerLocalizationsDelegate
+//     extends LocalizationsDelegate<MonthYearPickerLocalizations> {
+//   const CustomMonthYearPickerLocalizationsDelegate();
+//   @override
+//   bool isSupported(Locale locale) => locale.languageCode == 'mr';
+//   @override
+//   Future<MonthYearPickerLocalizations> load(Locale locale) {
+//     return SynchronousFuture<MonthYearPickerLocalizations>(
+//       MonthYearPickerLocalizationsMr(locale.languageCode),
+//     );
+//   }
+
+//   @override
+//   bool shouldReload(covariant LocalizationsDelegate old) => false;
+// }

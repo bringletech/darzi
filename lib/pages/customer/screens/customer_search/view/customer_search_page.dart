@@ -1,9 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darzi/apiData/call_api_service/call_service.dart';
 import 'package:darzi/colors.dart';
-import 'package:darzi/common/widgets/tailor/common_app_bar_search_customer_without_back.dart';
-import 'package:darzi/common/widgets/tailor/common_app_bar_with_back.dart';
-import 'package:darzi/constants/string_constant.dart';
 import 'package:darzi/l10n/app_localizations.dart';
 import 'package:darzi/pages/customer/screens/customer_search/view/tailor_full_view.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +9,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:darzi/apiData/model/get_all_tailors_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../customer_dashboard/view/customer_dashboard.dart';
 
 class CustomerSearchPage extends StatefulWidget {
@@ -55,7 +51,7 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
     });
 
     Get_All_Tailors_response_Model model =
-    await CallService().getAllTailorsList();
+        await CallService().getAllTailorsList();
 
     print('Loaded Tailors: ${model.data?.length}');
     setState(() {
@@ -64,7 +60,6 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
       filteredTailorList = tailorList;
     });
   }
-
 
   void _filterContacts() {
     String query = _searchController.text.toLowerCase();
@@ -82,88 +77,89 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-      // Navigate to TailorDashboardNew when device back button is pressed
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CustomerHomeScreen(
-              locale: widget.locale,
-            )),
-      );
-      return false; // Prevent default back behavior
-    },child:Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.searchTailor,
-          style: const TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-            fontSize: 24,
-          ),
-          textAlign: TextAlign.center,
-        ),
+      onWillPop: () async {
+        // Navigate to TailorDashboardNew when device back button is pressed
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CustomerHomeScreen(
+                    locale: widget.locale,
+                  )),
+        );
+        return false; // Prevent default back behavior
+      },
+      child: Scaffold(
         backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true, // 👈 yeh add karo
-        scrolledUnderElevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: SvgPicture.asset(
-            'assets/svgIcon/myTailor.svg',
-            color: Colors.black,
+        appBar: AppBar(
+          title: Text(
+            AppLocalizations.of(context)!.searchTailor,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              fontSize: 24,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true, // 👈 yeh add karo
+          scrolledUnderElevation: 0,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 18.0),
+            child: SvgPicture.asset(
+              'assets/svgIcon/myTailor.svg',
+              color: Colors.black,
+            ),
           ),
         ),
-      ),
-      // CustomAppBarSearchCustomerWithOutBack(
-      //   title: AppLocalizations.of(context)!.searchTailor,
-      //   hasBackButton: true,
-      //   elevation: 2.0,
-      //   leadingIcon: SvgPicture.asset(
-      //     'assets/svgIcon/myTailor.svg',
-      //     color: Colors.black,
-      //   ),
-      // ),
-      body: RefreshIndicator(
-        onRefresh: _loadData,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: AppColors.newUpdateColor,
-                      width: 1.0,
-                      style: BorderStyle.solid),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
+        // CustomAppBarSearchCustomerWithOutBack(
+        //   title: AppLocalizations.of(context)!.searchTailor,
+        //   hasBackButton: true,
+        //   elevation: 2.0,
+        //   leadingIcon: SvgPicture.asset(
+        //     'assets/svgIcon/myTailor.svg',
+        //     color: Colors.black,
+        //   ),
+        // ),
+
+        body: RefreshIndicator(
+          onRefresh: _loadData,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: AppColors.newUpdateColor,
+                        width: 1.0,
+                        style: BorderStyle.solid),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!.mobileOrName,
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
+                      suffixIcon: const Icon(Icons.search),
                     ),
-                  ],
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)!.mobileOrName,
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
-                    suffixIcon: const Icon(Icons.search),
                   ),
                 ),
               ),
-            ),
-            Expanded(
+              Expanded(
                 child: isLoading && !isRefreshing
                     ? Center(
                         child:
@@ -192,8 +188,8 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
                             ],
                           )
                         : Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: ListView.builder(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: ListView.builder(
                               physics: BouncingScrollPhysics(),
                               itemCount: filteredTailorList.length,
                               itemBuilder: (context, index) {
@@ -201,13 +197,15 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
                                 // customerId = contact.id.toString();
                                 return GestureDetector(
                                   onTap: () async {
-
-                                    final shouldRefresh = await
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => TailorFullView(
-                                                locale: widget.locale,tailorId: contact.id.toString())));
+                                    final shouldRefresh = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TailorFullView(
+                                          locale: widget.locale,
+                                          tailorId: contact.id.toString(),
+                                        ),
+                                      ),
+                                    );
 
                                     // 👇👇 Yahan print karo
                                     print('shouldRefresh: $shouldRefresh');
@@ -250,13 +248,13 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
                                                   width: 50,
                                                   imageUrl: contact.profileUrl
                                                       .toString(),
-                                                  errorWidget: (context, url,
-                                                          error) =>
-                                                      SvgPicture.asset(
-                                                        'assets/svgIcon/profilepic.svg', // Default profile icon
-                                                        width: 120,
-                                                        height: 120,
-                                                      ),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          SvgPicture.asset(
+                                                    'assets/svgIcon/profilepic.svg', // Default profile icon
+                                                    width: 120,
+                                                    height: 120,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -282,11 +280,14 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
                                                       color: Color(0xFF000000),
                                                       fontSize: 19,
                                                       fontFamily: 'Poppins',
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
                                                   ),
                                                   Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       SvgPicture.asset(
                                                         'assets/svgIcon/location.svg',
@@ -296,22 +297,30 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
                                                       ),
                                                       Expanded(
                                                         child: Container(
-                                                          width: MediaQuery.of(context).size.width*0.3,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.3,
                                                           child: Text(
                                                             contact.address ??
                                                                 AppLocalizations.of(
                                                                         context)!
                                                                     .userNoAddress,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             maxLines: 2,
-                                                            style: const TextStyle(
-                                                              color:
-                                                                  Color(0xFF000000),
+                                                            style:
+                                                                const TextStyle(
+                                                              color: Color(
+                                                                  0xFF000000),
                                                               fontSize: 13,
-                                                              fontFamily: 'Poppins',
+                                                              fontFamily:
+                                                                  'Poppins',
                                                               fontWeight:
-                                                                  FontWeight.w500,
+                                                                  FontWeight
+                                                                      .w500,
                                                             ),
                                                           ),
                                                         ),
@@ -321,7 +330,8 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
                                                   Row(
                                                     children: [
                                                       RatingBarIndicator(
-                                                        rating: contact.avgRating!
+                                                        rating: contact
+                                                            .avgRating!
                                                             .toDouble(),
                                                         direction:
                                                             Axis.horizontal,
@@ -338,25 +348,33 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
                                                       ),
                                                       SizedBox(width: 6),
                                                       Container(
-                                                        padding:
-                                                            EdgeInsets.symmetric(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
                                                                 horizontal: 8,
                                                                 vertical: 1.5),
-                                                        decoration: BoxDecoration(
+                                                        decoration:
+                                                            BoxDecoration(
                                                           color: Colors.black,
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(4),
                                                         ),
                                                         child: Text(
-                                                          contact.avgRating != null
-                                                              ? contact.avgRating!.toStringAsFixed(1)
+                                                          contact.avgRating !=
+                                                                  null
+                                                              ? contact
+                                                                  .avgRating!
+                                                                  .toStringAsFixed(
+                                                                      1)
                                                               : '0.0',
                                                           style: TextStyle(
-                                                              fontFamily: "Inter",
-                                                              color: Colors.white,
+                                                              fontFamily:
+                                                                  "Inter",
+                                                              color:
+                                                                  Colors.white,
                                                               fontWeight:
-                                                                  FontWeight.w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                               fontSize: 16),
                                                         ),
                                                       ),
@@ -367,37 +385,40 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
                                             ),
 
                                             /// ICON BUTTONS ///
-                                            contact.hideMobileNo == false?Column(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    openWhatsApp(
-                                                        context,
-                                                        contact.mobileNo
-                                                            .toString());
-                                                  },
-                                                  child: Image.asset(
-                                                    'assets/images/whatsapp.png',
-                                                    width: 28,
-                                                    height: 28,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 20),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    _makePhoneCall(
-                                                        context,
-                                                        contact.mobileNo
-                                                            .toString());
-                                                  },
-                                                  child: SvgPicture.asset(
-                                                    'assets/svgIcon/phone_color.svg',
-                                                    width: 28,
-                                                    height: 28,
-                                                  ),
-                                                ),
-                                              ],
-                                            ):SizedBox(),
+                                            contact.hideMobileNo == false
+                                                ? Column(
+                                                    children: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          openWhatsApp(
+                                                              context,
+                                                              contact.mobileNo
+                                                                  .toString());
+                                                        },
+                                                        child: Image.asset(
+                                                          'assets/images/whatsapp.png',
+                                                          width: 28,
+                                                          height: 28,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 20),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          _makePhoneCall(
+                                                              context,
+                                                              contact.mobileNo
+                                                                  .toString());
+                                                        },
+                                                        child: SvgPicture.asset(
+                                                          'assets/svgIcon/phone_color.svg',
+                                                          width: 28,
+                                                          height: 28,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : SizedBox(),
                                           ],
                                         ),
                                       ),
@@ -406,11 +427,12 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
                                 );
                               },
                             ),
-                        )),
-          ],
+                          ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 
@@ -455,12 +477,11 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
     return cleanedPhone; // ✅ no `+` in this string!
   }
 
-
-
   void openWhatsApp(BuildContext context, String phone) async {
     String formattedPhone = formatPhoneNumber(phone);
 
-    final Uri whatsappUrl = Uri.parse("https://wa.me/$formattedPhone?text=Hello");
+    final Uri whatsappUrl =
+        Uri.parse("https://wa.me/$formattedPhone?text=Hello");
 
     try {
       // Always launch directly (skip canLaunch check)
@@ -485,102 +506,102 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
   }
 }
 
-class FullScreenImage extends StatelessWidget {
-  final Data contact;
+// class FullScreenImage extends StatelessWidget {
+//   final Data contact;
 
-  const FullScreenImage({required this.contact, super.key});
+//   const FullScreenImage({required this.contact, super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBarWithBack(
-        title: AppLocalizations.of(context)!.tailorDetail,
-        hasBackButton: true,
-        elevation: 2.0,
-        onBackButtonPressed: () {
-          Navigator.pop(context);
-        },
-        leadingIcon: SvgPicture.asset(
-          'assets/svgIcon/myTailor.svg',
-          color: Colors.black,
-        ),
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(45),
-                topRight: Radius.circular(45),
-              ),
-              child: CachedNetworkImage(
-                imageUrl: contact.profileUrl.toString(),
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.22,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(45),
-                  topRight: Radius.circular(45),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.7),
-                    spreadRadius: 4.0,
-                    blurRadius: 4.0,
-                    offset: const Offset(0, -3),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${AppLocalizations.of(context)!.userName} : ${contact.name ?? AppLocalizations.of(context)!.noUserName}",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "${AppLocalizations.of(context)!.mobileNumber} : ${contact.mobileNo ?? AppLocalizations.of(context)!.noMobileNumber}",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "${AppLocalizations.of(context)!.userAddress} : ${contact.address ?? AppLocalizations.of(context)!.userNoAddress}",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: CustomAppBarWithBack(
+//         title: AppLocalizations.of(context)!.tailorDetail,
+//         hasBackButton: true,
+//         elevation: 2.0,
+//         onBackButtonPressed: () {
+//           Navigator.pop(context);
+//         },
+//         leadingIcon: SvgPicture.asset(
+//           'assets/svgIcon/myTailor.svg',
+//           color: Colors.black,
+//         ),
+//       ),
+//       body: Stack(
+//         children: [
+//           Padding(
+//             padding: const EdgeInsets.only(top: 15.0),
+//             child: ClipRRect(
+//               borderRadius: const BorderRadius.only(
+//                 topLeft: Radius.circular(45),
+//                 topRight: Radius.circular(45),
+//               ),
+//               child: CachedNetworkImage(
+//                 imageUrl: contact.profileUrl.toString(),
+//                 fit: BoxFit.cover,
+//                 width: MediaQuery.of(context).size.width,
+//                 height: MediaQuery.of(context).size.height,
+//                 errorWidget: (context, url, error) => const Icon(Icons.error),
+//               ),
+//             ),
+//           ),
+//           Align(
+//             alignment: Alignment.bottomCenter,
+//             child: Container(
+//               height: MediaQuery.of(context).size.height * 0.22,
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: const BorderRadius.only(
+//                   topLeft: Radius.circular(45),
+//                   topRight: Radius.circular(45),
+//                 ),
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: Colors.grey.withOpacity(0.7),
+//                     spreadRadius: 4.0,
+//                     blurRadius: 4.0,
+//                     offset: const Offset(0, -3),
+//                   ),
+//                 ],
+//               ),
+//               child: Padding(
+//                 padding: const EdgeInsets.all(20.0),
+//                 child: SizedBox(
+//                   width: MediaQuery.of(context).size.width,
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     mainAxisAlignment: MainAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         "${AppLocalizations.of(context)!.userName} : ${contact.name ?? AppLocalizations.of(context)!.noUserName}",
+//                         style: const TextStyle(
+//                           fontSize: 16,
+//                           fontFamily: 'Poppins',
+//                         ),
+//                       ),
+//                       const SizedBox(height: 8),
+//                       Text(
+//                         "${AppLocalizations.of(context)!.mobileNumber} : ${contact.mobileNo ?? AppLocalizations.of(context)!.noMobileNumber}",
+//                         style: const TextStyle(
+//                           fontSize: 16,
+//                           fontFamily: 'Poppins',
+//                         ),
+//                       ),
+//                       const SizedBox(height: 8),
+//                       Text(
+//                         "${AppLocalizations.of(context)!.userAddress} : ${contact.address ?? AppLocalizations.of(context)!.userNoAddress}",
+//                         style: const TextStyle(
+//                           fontSize: 16,
+//                           fontFamily: 'Poppins',
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

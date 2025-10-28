@@ -289,10 +289,10 @@ class AppLocalizationsMl extends AppLocalizations {
   String get warningMessage1 => 'ദയവായി എല്ലാ വിശദാംശങ്ങളും പൂരിപ്പിക്കുക';
 
   @override
-  String get myTailor => 'എന്റെ തയ്യൽക്കാരൻ';
+  String get myTailor => 'തയ്യൽക്കാരൻ';
 
   @override
-  String get myDresses => 'എന്റെ വസ്ത്രങ്ങൾ';
+  String get myDresses => 'വസ്ത്രങ്ങൾ';
 
   @override
   String get tailorDetail => 'തയ്യൽക്കാരന്റെ വിശദാംശങ്ങൾ';

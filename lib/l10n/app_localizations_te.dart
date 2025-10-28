@@ -289,10 +289,10 @@ class AppLocalizationsTe extends AppLocalizations {
   String get warningMessage1 => 'దయచేసి అన్ని వివరాలు నింపండి';
 
   @override
-  String get myTailor => 'నా దర్జీ';
+  String get myTailor => 'దర్జీ';
 
   @override
-  String get myDresses => 'నా దుస్తులు';
+  String get myDresses => 'దుస్తులు';
 
   @override
   String get tailorDetail => 'దర్జీ వివరాలు';
